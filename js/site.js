@@ -69,18 +69,18 @@ function headerHTML(active){
   <header class="site-header">
     <div class="wrap hd">
       <button class="burger" aria-label="Menu" onclick="openMenu()">${ICON.menu}</button>
-      <a href="/index.html" class="brand" aria-label="Reserved LA home">RESERVED<span class="la">LA</span></a>
+      <a href="index.html" class="brand" aria-label="Reserved LA home">RESERVED<span class="la">LA</span></a>
       <nav class="nav">
-        ${link('/shop.html','Shop All','shop')}
-        ${link('/shop.html?cat=Shorts','Shorts','')}
-        ${link('/shop.html?cat=Hoodies','Hoodies','')}
-        ${link('/shop.html?cat=T-Shirts','Tees','')}
-        ${link('/shop.html?sort=new','New Arrivals','new')}
-        ${link('/about.html','About','about')}
-        ${link('/contact.html','Contact','contact')}
+        ${link('shop.html','Shop All','shop')}
+        ${link('shop.html?cat=Shorts','Shorts','')}
+        ${link('shop.html?cat=Hoodies','Hoodies','')}
+        ${link('shop.html?cat=T-Shirts','Tees','')}
+        ${link('shop.html?sort=new','New Arrivals','new')}
+        ${link('about.html','About','about')}
+        ${link('contact.html','Contact','contact')}
       </nav>
       <div class="hd-icons">
-        <button class="icon-btn" aria-label="Search" onclick="location.href='/shop.html'">${ICON.search}</button>
+        <button class="icon-btn" aria-label="Search" onclick="location.href='shop.html'">${ICON.search}</button>
         <button class="icon-btn" aria-label="Bag" onclick="openCart()">${ICON.cart}<span class="cart-count">0</span></button>
       </div>
     </div>
@@ -92,16 +92,16 @@ function headerHTML(active){
         <span class="brand" style="font-size:22px">RESERVED<span class="la">LA</span></span>
         <button class="icon-btn" onclick="closeMenu()">${ICON.close}</button>
       </div>
-      <a href="/shop.html">Shop All</a>
-      <a href="/shop.html?cat=Shorts">Shorts</a>
-      <a href="/shop.html?cat=Hoodies">Hoodies</a>
-      <a href="/shop.html?cat=T-Shirts">Tees</a>
-      <a href="/shop.html?cat=Jackets">Jackets</a>
-      <a href="/shop.html?cat=Denim">Denim</a>
-      <a href="/shop.html?sort=new">New Arrivals</a>
-      <a href="/about.html">About</a>
-      <a href="/faq.html">FAQ</a>
-      <a href="/contact.html">Contact</a>
+      <a href="shop.html">Shop All</a>
+      <a href="shop.html?cat=Shorts">Shorts</a>
+      <a href="shop.html?cat=Hoodies">Hoodies</a>
+      <a href="shop.html?cat=T-Shirts">Tees</a>
+      <a href="shop.html?cat=Jackets">Jackets</a>
+      <a href="shop.html?cat=Denim">Denim</a>
+      <a href="shop.html?sort=new">New Arrivals</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
     </div>
   </div>`;
 }
@@ -143,32 +143,32 @@ function footerHTML(){
 
       <div class="foot-col">
         <h4>Shop</h4>
-        <a href="/shop.html">Shop All</a>
-        <a href="/shop.html?cat=Hoodies">Hoodies</a>
-        <a href="/shop.html?cat=T-Shirts">T-Shirts</a>
-        <a href="/shop.html?cat=Jackets">Jackets</a>
-        <a href="/shop.html?cat=Denim">Denim</a>
-        <a href="/shop.html?sort=new">New Arrivals</a>
+        <a href="shop.html">Shop All</a>
+        <a href="shop.html?cat=Hoodies">Hoodies</a>
+        <a href="shop.html?cat=T-Shirts">T-Shirts</a>
+        <a href="shop.html?cat=Jackets">Jackets</a>
+        <a href="shop.html?cat=Denim">Denim</a>
+        <a href="shop.html?sort=new">New Arrivals</a>
       </div>
 
       <div class="foot-col">
         <h4>Help</h4>
-        <a href="/contact.html">Contact Us</a>
-        <a href="/faq.html">FAQ</a>
-        <a href="/pages/shipping-policy.html">Shipping &amp; Fulfillment</a>
-        <a href="/pages/refund-policy.html">Returns &amp; Refunds</a>
-        <a href="/about.html">About Us</a>
-        <a href="/pages/track-order.html">Track Your Order</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="faq.html">FAQ</a>
+        <a href="shipping-policy.html">Shipping &amp; Fulfillment</a>
+        <a href="refund-policy.html">Returns &amp; Refunds</a>
+        <a href="about.html">About Us</a>
+        <a href="track-order.html">Track Your Order</a>
       </div>
 
       <div class="foot-col">
         <h4>Legal</h4>
-        <a href="/pages/privacy-policy.html">Privacy Policy</a>
-        <a href="/pages/terms.html">Terms &amp; Conditions</a>
-        <a href="/pages/refund-policy.html">Refund Policy</a>
-        <a href="/pages/shipping-policy.html">Fulfillment Policy</a>
-        <a href="/pages/sms-terms.html">SMS Terms &amp; Privacy</a>
-        <a href="/pages/business-disclaimer.html">Business Disclaimer</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="refund-policy.html">Refund Policy</a>
+        <a href="shipping-policy.html">Fulfillment Policy</a>
+        <a href="sms-terms.html">SMS Terms &amp; Privacy</a>
+        <a href="business-disclaimer.html">Business Disclaimer</a>
       </div>
     </div>
 
@@ -216,7 +216,7 @@ function renderCart(){
   if(!wrap) return;
   if(hc) hc.textContent=cartQtyTotal();
   if(cart.length===0){
-    wrap.innerHTML=`<div class="cart-empty"><p style="font-family:var(--font-display);font-size:24px;text-transform:uppercase;color:var(--ink)">Your bag is empty</p><p>Add something worth reserving.</p><a class="btn" href="/shop.html">Shop Now</a></div>`;
+    wrap.innerHTML=`<div class="cart-empty"><p style="font-family:var(--font-display);font-size:24px;text-transform:uppercase;color:var(--ink)">Your bag is empty</p><p>Add something worth reserving.</p><a class="btn" href="shop.html">Shop Now</a></div>`;
     foot.innerHTML="";
     updateCartCount(); return;
   }
@@ -275,7 +275,7 @@ function cookieBanner(){
   if(localStorage.getItem("rl_cookie_ok")) return;
   const c=document.createElement("div");
   c.className="cookie";
-  c.innerHTML=`<p>We use cookies to run this store, remember your bag, and improve your experience. See our <a href="/pages/privacy-policy.html">Privacy Policy</a>.</p>
+  c.innerHTML=`<p>We use cookies to run this store, remember your bag, and improve your experience. See our <a href="privacy-policy.html">Privacy Policy</a>.</p>
     <div class="c-actions">
       <button class="btn sm ghost" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="cookieChoice(false)">Decline</button>
       <button class="btn sm on-dark" onclick="cookieChoice(true)">Accept</button>

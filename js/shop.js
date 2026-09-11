@@ -18,12 +18,12 @@ function cardHTML(p){
   <div class="card">
     <div class="imgwrap">
       ${badge}
-      <a href="/product.html?id=${p.id}"><img src="${p.img}" alt="${p.name}" loading="lazy"></a>
-      <div class="quick"><a class="btn block sm" href="/product.html?id=${p.id}">View Product</a></div>
+      <a href="product.html?id=${p.id}"><img src="${p.img}" alt="${p.name}" loading="lazy"></a>
+      <div class="quick"><a class="btn block sm" href="product.html?id=${p.id}">View Product</a></div>
     </div>
     <div class="info">
       <div class="cat">${p.cat}</div>
-      <div class="name"><a href="/product.html?id=${p.id}">${p.name}</a></div>
+      <div class="name"><a href="product.html?id=${p.id}">${p.name}</a></div>
       <div style="margin-bottom:7px">${stars(p.rating,p.reviews)}</div>
       <div class="price">${price}</div>
     </div>
@@ -87,7 +87,7 @@ function initProduct(){
   const id=new URLSearchParams(location.search).get("id");
   const p=getProduct(id);
   const root=document.getElementById("pdRoot");
-  if(!p){ root.innerHTML=`<div class="center" style="padding:80px 0"><h2 class="display" style="font-size:40px">Product not found</h2><p><a class="btn" href="/shop.html">Back to Shop</a></p></div>`; return; }
+  if(!p){ root.innerHTML=`<div class="center" style="padding:80px 0"><h2 class="display" style="font-size:40px">Product not found</h2><p><a class="btn" href="shop.html">Back to Shop</a></p></div>`; return; }
 
   document.title=p.name+" · RESERVED LA";
   const onSale=p.was&&p.was>p.price;
@@ -95,7 +95,7 @@ function initProduct(){
   const priceHTML=onSale?`<span class="was">${fmt(p.was)}</span><span class="now sale">${fmt(p.price)}</span>`:`<span class="now">${fmt(p.price)}</span>`;
 
   root.innerHTML=`
-  <div class="crumbs wrap"><a href="/index.html">Home</a> / <a href="/shop.html">Shop</a> / <a href="/shop.html?cat=${encodeURIComponent(p.cat)}">${p.cat}</a> / ${p.name}</div>
+  <div class="crumbs wrap"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / <a href="shop.html?cat=${encodeURIComponent(p.cat)}">${p.cat}</a> / ${p.name}</div>
   <div class="wrap pd">
     <div class="pd-media">
       <div class="pd-main"><img id="pdMain" src="${p.gallery[0]}" alt="${p.name}"></div>

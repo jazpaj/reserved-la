@@ -16,15 +16,17 @@ Built as a fast static site (HTML/CSS/JS) modeled on the kidsetoys.com structure
 /js/data.js            BRAND config + product catalog + placeholder image generator
 /js/site.js            Header, footer, cart drawer, cookie banner, toast (shared on every page)
 /js/shop.js            Product cards, grids, filtering, product-detail logic
-/pages/
-    privacy-policy.html
-    terms.html
-    refund-policy.html
-    shipping-policy.html      (Fulfillment Policy)
-    sms-terms.html
-    business-disclaimer.html
-    track-order.html
+privacy-policy.html    Policy pages (flat at root, all relative paths)
+terms.html
+refund-policy.html
+shipping-policy.html   (Fulfillment Policy)
+sms-terms.html
+business-disclaimer.html
+track-order.html
 ```
+
+> **Paths are relative** (no leading `/`), so the site works hosted at a domain root
+> (reservedla.com) *or* a subpath (GitHub Pages project site) with no changes.
 
 ## Compliance checklist (what processors look for) — all included
 - ✅ Full legal footer: **Reserved LA — a DBA of ZA Distribution LLC**, registered address, EIN 88-1123884

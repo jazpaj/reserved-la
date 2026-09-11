@@ -93,7 +93,7 @@ const PRODUCTS = [
 /* attach images: real photos when provided, else generated placeholder */
 PRODUCTS.forEach(p=>{
   if(p.photos && p.photos.length){
-    p.gallery = p.photos.map(f=>"/assets/products/"+f);
+    p.gallery = p.photos.map(f=>"assets/products/"+f);
     p.img = p.gallery[0];
     return;
   }
