@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Your Order · RESERVED LA</title>
+<meta name="description" content="Track your Reserved LA order. Enter your order number and email to view status.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="announce-slot"></div>
+<div id="header-slot"></div>
+
+<main>
+  <div class="page-hero"><h1>Track Your Order</h1><p>Enter your details below to check the status of your order.</p></div>
+  <section class="wrap">
+    <div class="prose" style="max-width:520px">
+      <form onsubmit="return trackSubmit(event)">
+        <div class="field"><label>Order Number</label><input type="text" required placeholder="#RL-000000"></div>
+        <div class="field"><label>Email Address</label><input type="email" required placeholder="you@email.com"></div>
+        <button class="btn block" type="submit">Track Order</button>
+      </form>
+      <div class="callout" style="margin-top:24px">A tracking link is emailed to you automatically as soon as your order ships. If you can't find it, check your spam folder or email <a href="mailto:support@reservedla.com">support@reservedla.com</a> with your order number and we'll look it up for you.</div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-slot"></div>
+<script src="/js/data.js"></script>
+<script src="/js/site.js"></script>
+<script>
+  mountChrome("");
+  function trackSubmit(e){ e.preventDefault(); toast("We've emailed your latest tracking details."); return false; }
+</script>
+</body>
+</html>

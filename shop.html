@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop All · RESERVED LA</title>
+<meta name="description" content="Shop the full Reserved LA collection — hoodies, tees, denim, jackets, bottoms and accessories. Premium streetwear designed in Los Angeles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="announce-slot"></div>
+<div id="header-slot"></div>
+
+<main>
+  <div class="page-hero">
+    <h1 id="shopTitle">Shop All</h1>
+    <p>Premium streetwear essentials, built to last. All prices in USD.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="shop-bar">
+      <div class="filters" id="filters"></div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span class="count-note" id="countNote"></span>
+        <select id="sortSelect" aria-label="Sort products">
+          <option value="featured">Featured</option>
+          <option value="new">Newest</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+    </div>
+    <div class="p-grid" id="shopGrid" style="padding-bottom:60px"></div>
+  </div>
+</main>
+
+<div id="footer-slot"></div>
+<script src="/js/data.js"></script>
+<script src="/js/site.js"></script>
+<script src="/js/shop.js"></script>
+<script>mountChrome("shop"); initShop();</script>
+</body>
+</html>

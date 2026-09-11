@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Editor / OS
+Thumbs.db
+*.log
+
+# Node (in case tooling is added later)
+node_modules/

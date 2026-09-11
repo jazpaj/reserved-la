@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Us · RESERVED LA</title>
+<meta name="description" content="Contact Reserved LA. Email support@reservedla.com — customer service 7 days a week. Operated by ZA Distribution LLC, Rancho Cordova, CA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="announce-slot"></div>
+<div id="header-slot"></div>
+
+<main>
+  <div class="page-hero">
+    <h1>Contact Us</h1>
+    <p>Questions about an order, sizing, or returns? We're here 7 days a week.</p>
+  </div>
+
+  <section class="wrap">
+    <div class="contact-grid">
+      <div>
+        <h2 class="display" style="font-size:30px;margin-bottom:16px">Send Us A Message</h2>
+        <form onsubmit="return contactSubmit(event)">
+          <div class="field"><label>Full Name</label><input type="text" required placeholder="Your name"></div>
+          <div class="field"><label>Email</label><input type="email" required placeholder="you@email.com"></div>
+          <div class="field"><label>Order Number <span style="color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></label><input type="text" placeholder="#RL-000000"></div>
+          <div class="field"><label>Subject</label>
+            <select><option>Order Status / Tracking</option><option>Returns &amp; Exchanges</option><option>Sizing Help</option><option>Product Question</option><option>Wholesale / Collab</option><option>Other</option></select>
+          </div>
+          <div class="field"><label>Message</label><textarea rows="5" required placeholder="How can we help?"></textarea></div>
+          <button class="btn block" type="submit">Send Message</button>
+          <p style="font-size:12px;color:var(--muted);margin-top:12px">We typically respond within 24 hours. By submitting, you agree to our <a href="/pages/privacy-policy.html" style="text-decoration:underline">Privacy Policy</a>.</p>
+        </form>
+      </div>
+
+      <div>
+        <div class="info-card">
+          <h3>Customer Support</h3>
+          <p><a href="mailto:support@reservedla.com" style="text-decoration:underline"><b>support@reservedla.com</b></a></p>
+          <p class="lbl">Phone</p>
+          <p><span id="cPhone"></span></p>
+          <p class="lbl">Hours</p>
+          <p>7 days a week · 8:00 AM – 8:00 PM PT</p>
+          <p style="color:var(--muted);font-size:13px;margin-top:10px">Email is the fastest way to reach us — most messages are answered the same business day.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Business Details</h3>
+          <p><b>Reserved LA</b></p>
+          <p style="color:var(--muted);font-size:13.5px">A DBA of ZA Distribution LLC</p>
+          <p class="lbl">Mailing / Registered Address</p>
+          <p>2930 Shawn Way<br>Rancho Cordova, California 95670<br>United States</p>
+          <p class="lbl">Entity</p>
+          <p style="font-size:13.5px">ZA Distribution LLC · California LLC<br>EIN 88-1123884</p>
+          <p style="color:var(--muted);font-size:12.5px;margin-top:10px">This is our registered business address. We are an online store and do not currently offer in-person shopping at this location.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Follow Us</h3>
+          <p><a href="https://instagram.com/reservedla" target="_blank" rel="noopener" style="text-decoration:underline">Instagram @reservedla</a></p>
+          <p><a href="https://tiktok.com/@reservedla" target="_blank" rel="noopener" style="text-decoration:underline">TikTok @reservedla</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-slot"></div>
+<script src="/js/data.js"></script>
+<script src="/js/site.js"></script>
+<script>
+  mountChrome("contact");
+  document.getElementById("cPhone").innerHTML = BRAND.phone;
+  function contactSubmit(e){ e.preventDefault(); e.target.reset(); toast("Thanks — your message has been sent."); return false; }
+</script>
+</body>
+</html>
