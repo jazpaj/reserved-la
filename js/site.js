@@ -249,7 +249,8 @@ function renderCart(){
 
 function checkout(){
   if(getCart().length===0) return;
-  toast("Checkout connects to your payment processor once configured.");
+  const base = location.pathname.replace(/[^/]*$/, "");
+  location.href = base + "checkout.html";
 }
 
 /* ---------- Drawer / menu open-close ---------- */

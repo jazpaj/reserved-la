@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout · RESERVED LA</title>
+<meta name="description" content="Secure checkout — Reserved LA. SSL-encrypted. All prices in USD.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+<div id="announce-slot"></div>
+<div id="header-slot"></div>
+
+<main>
+  <div class="crumbs wrap"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / Checkout</div>
+  <div class="wrap">
+    <h1 class="display" style="font-size:clamp(34px,6vw,56px);margin:4px 0 6px">Checkout</h1>
+    <div id="coRoot"></div>
+  </div>
+</main>
+
+<div id="footer-slot"></div>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+mountChrome("");
+
+(function(){
+  const root = document.getElementById("coRoot");
+  const cart = getCart();
+  let discount = 0, promoCode = "";
+  const PROMOS = { "RESERVED10": 0.10, "FW26": 0.15 }; // demo discount codes
+
+  if(!cart.length){
+    root.innerHTML = `<div class="co-empty">
+      <p style="font-family:var(--font-display);font-size:26px;text-transform:uppercase;color:var(--ink)">Your bag is empty</p>
+      <p>Add something worth reserving before checking out.</p>
+      <p style="margin-top:20px"><a class="btn" href="shop.html">Shop The Collection</a></p></div>`;
+    return;
+  }
+
+  function totals(){
+    const sub = cartSubtotal();
+    const disc = +(sub * discount).toFixed(2);
+    const afterDisc = sub - disc;
+    const ship = afterDisc >= BRAND.freeShipThreshold || afterDisc === 0 ? 0 : 6.95;
+    const total = afterDisc + ship;
+    return {sub, disc, ship, total};
+  }
+
+  function render(){
+    const t = totals();
+    const items = getCart().map(l=>`
+      <div class="sum-line">
+        <div class="sum-thumb"><img class="th" src="${l.img}" alt="${l.name}"><span class="qbadge">${l.qty}</span></div>
+        <div class="sl-info">
+          <div class="sl-name">${l.name}</div>
+          <div class="sl-meta">${l.cat} · Size ${l.size}</div>
+        </div>
+        <div class="sl-price">${fmt(l.price*l.qty)}</div>
+      </div>`).join("");
+
+    root.innerHTML = `
+    <form class="checkout-grid" id="coForm" novalidate>
+      <div class="co-main">
+        <div class="co-badge">${ICON.lock} Secure, SSL-encrypted checkout · all prices in USD</div>
+
+        <div class="co-section">
+          <h2>Contact</h2>
+          <div class="co-row">
+            <div class="field"><label>Email</label><input type="email" name="email" required placeholder="you@email.com"></div>
+            <div class="field"><label>Phone <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted)">(for order updates)</span></label><input type="tel" name="phone" required placeholder="(555) 123-4567"></div>
+          </div>
+          <label class="co-check"><input type="checkbox" name="smsOptin"> <span>I would like to receive updates by text</span></label>
+          <p class="co-fine">We'll send order updates and occasional offers from Reserved LA. Message &amp; data rates may apply. Message frequency varies. Reply HELP for help or STOP to opt out. See our <a href="sms-terms.html">SMS Terms &amp; Privacy</a>.</p>
+        </div>
+
+        <div class="co-section">
+          <h2>Shipping Address</h2>
+          <div class="co-row"><div class="field"><label>Full name</label><input type="text" name="name" required placeholder="Jane Doe"></div></div>
+          <div class="co-row" style="margin-top:14px"><div class="field"><label>Address</label><input type="text" name="address" required placeholder="123 Main St"></div></div>
+          <div class="co-row" style="margin-top:14px"><div class="field"><label>Apartment, suite, etc. <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted)">(optional)</span></label><input type="text" name="apt" placeholder="Apt 4B"></div></div>
+          <div class="co-row three" style="margin-top:14px">
+            <div class="field"><label>City</label><input type="text" name="city" required placeholder="Los Angeles"></div>
+            <div class="field"><label>State</label><input type="text" name="state" required placeholder="CA"></div>
+            <div class="field"><label>ZIP</label><input type="text" name="zip" required placeholder="90001"></div>
+          </div>
+          <div class="co-row" style="margin-top:14px"><div class="field"><label>Country</label>
+            <select name="country"><option>United States</option></select></div></div>
+        </div>
+
+        <div class="co-section">
+          <h2>Payment</h2>
+          <div class="co-badge">${ICON.lock} All transactions are secure and encrypted.</div>
+          <div class="co-row"><div class="field"><label>Card number</label><input type="text" name="cardNum" inputmode="numeric" autocomplete="cc-number" required placeholder="1234 1234 1234 1234"></div></div>
+          <div class="co-row two" style="margin-top:14px">
+            <div class="field"><label>Expiry (MM/YY)</label><input type="text" name="cardExp" autocomplete="cc-exp" required placeholder="MM/YY"></div>
+            <div class="field"><label>CVC</label><input type="text" name="cardCvc" inputmode="numeric" autocomplete="cc-csc" required placeholder="123"></div>
+          </div>
+          <div class="co-row" style="margin-top:14px"><div class="field"><label>Name on card</label><input type="text" name="cardName" required placeholder="Jane Doe"></div></div>
+        </div>
+
+        <div class="co-section">
+          <h2>Billing Address</h2>
+          <label class="co-check"><input type="checkbox" name="sameAsShip" checked onchange="toggleBilling(this)"> <span>Same as shipping address</span></label>
+          <div id="billingFields" hidden>
+            <div class="co-row" style="margin-top:6px"><div class="field"><label>Full name</label><input type="text" name="bname" placeholder="Jane Doe"></div></div>
+            <div class="co-row" style="margin-top:14px"><div class="field"><label>Address</label><input type="text" name="baddress" placeholder="123 Main St"></div></div>
+            <div class="co-row three" style="margin-top:14px">
+              <div class="field"><label>City</label><input type="text" name="bcity" placeholder="Los Angeles"></div>
+              <div class="field"><label>State</label><input type="text" name="bstate" placeholder="CA"></div>
+              <div class="field"><label>ZIP</label><input type="text" name="bzip" placeholder="90001"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="summary">
+        <h2>Order Summary</h2>
+        <div class="sum-items">${items}</div>
+        <div class="promo">
+          <input type="text" id="promoInput" placeholder="Discount code" value="${promoCode}">
+          <button type="button" class="btn ghost" onclick="applyPromo()">Apply</button>
+        </div>
+        <div class="sum-rows">
+          <div class="sum-row"><span>Subtotal</span><span>${fmt(t.sub)}</span></div>
+          ${t.disc>0?`<div class="sum-row disc"><span>Discount (${promoCode})</span><span>−${fmt(t.disc)}</span></div>`:""}
+          <div class="sum-row"><span>Shipping</span><span>${t.ship===0?"FREE":fmt(t.ship)}</span></div>
+          <div class="sum-row total"><span>Total</span><span>${fmt(t.total)}</span></div>
+        </div>
+        <div class="billed-note">${ICON.lock}<span>Billed as <b>ZA DISTRIBUTION LLC</b> on your statement.</span></div>
+        <label class="co-check"><input type="checkbox" name="agree" id="agree" onchange="document.getElementById('payBtn').disabled=!this.checked"> <span>I agree to the <a href="terms.html">Terms &amp; Conditions</a>, <a href="refund-policy.html">Refund Policy</a>, and <a href="privacy-policy.html">Privacy Policy</a>.</span></label>
+        <button type="submit" class="btn block pay-btn" id="payBtn" disabled>${ICON.lock} Pay ${fmt(t.total)}</button>
+        <div class="pay-hint" id="payHint"></div>
+        <div class="secure-line">${ICON.lock} Secure SSL Checkout · 256-bit encryption</div>
+        <div class="co-pays"><span class="pb">VISA</span><span class="pb">MASTERCARD</span><span class="pb">AMEX</span><span class="pb">DISCOVER</span><span class="pb">APPLE&nbsp;PAY</span></div>
+        <div style="text-align:center"><a class="co-back" href="shop.html">← Continue shopping</a></div>
+      </aside>
+    </form>`;
+
+    document.getElementById("coForm").addEventListener("submit", onPay);
+  }
+
+  window.toggleBilling = function(cb){ document.getElementById("billingFields").hidden = cb.checked; };
+
+  window.applyPromo = function(){
+    const code = (document.getElementById("promoInput").value||"").trim().toUpperCase();
+    if(!code){ return; }
+    if(PROMOS[code]){ discount = PROMOS[code]; promoCode = code; toast("Promo applied — "+(discount*100)+"% off"); }
+    else { discount = 0; promoCode=""; toast("That code isn't valid."); }
+    render();
+  };
+
+  function onPay(e){
+    e.preventDefault();
+    const f = e.target;
+    if(!f.checkValidity()){ f.reportValidity(); return; }
+    if(!document.getElementById("agree").checked){
+      document.getElementById("payHint").textContent = "Please check the box above to complete your order.";
+      return;
+    }
+    // NOTE: front-end demo only. Connect a real PCI-compliant processor (Stripe, etc.)
+    // and replace the raw card fields with the processor's hosted fields before taking live payments.
+    const btn = document.getElementById("payBtn");
+    btn.disabled = true; btn.innerHTML = "Processing…";
+    setTimeout(confirmOrder, 900);
+  }
+
+  function confirmOrder(){
+    const order = "RL-" + Math.floor(100000 + Math.random()*900000);
+    const email = (document.querySelector('[name=email]')||{}).value || "your email";
+    try{ localStorage.removeItem("rl_cart_v1"); }catch(e){}
+    updateCartCount(); if(typeof renderCart==="function") renderCart();
+    root.innerHTML = `
+    <div class="co-confirm">
+      <div class="tick">${ICON.check}</div>
+      <h1>Thank You</h1>
+      <p class="ord">Your order <b>#${order}</b> has been placed.</p>
+      <p class="ord">A confirmation has been sent to <b>${email}</b>. You'll get tracking as soon as it ships (1–2 business days).</p>
+      <p style="margin:24px 0 6px"><a class="btn" href="shop.html">Continue Shopping</a></p>
+      <p class="co-fine" style="max-width:440px;margin:14px auto 0">Questions about your order? Email <a href="mailto:support@reservedla.com">support@reservedla.com</a>.</p>
+    </div>`;
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
