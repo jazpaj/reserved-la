@@ -73,8 +73,8 @@ function headerHTML(active){
       <nav class="nav">
         ${link('shop.html','Shop All','shop')}
         ${link('shop.html?cat=Shorts','Shorts','')}
-        ${link('shop.html?cat=Hoodies','Hoodies','')}
-        ${link('shop.html?cat=T-Shirts','Tees','')}
+        ${link('shop.html?cat=Denim','Denim','')}
+        ${link('shop.html?cat=Jackets','Jackets','')}
         ${link('shop.html?sort=new','New Arrivals','new')}
         ${link('about.html','About','about')}
         ${link('contact.html','Contact','contact')}
@@ -94,10 +94,11 @@ function headerHTML(active){
       </div>
       <a href="shop.html">Shop All</a>
       <a href="shop.html?cat=Shorts">Shorts</a>
-      <a href="shop.html?cat=Hoodies">Hoodies</a>
-      <a href="shop.html?cat=T-Shirts">Tees</a>
-      <a href="shop.html?cat=Jackets">Jackets</a>
       <a href="shop.html?cat=Denim">Denim</a>
+      <a href="shop.html?cat=Jackets">Jackets</a>
+      <a href="shop.html?cat=Bottoms">Bottoms</a>
+      <a href="shop.html?cat=Hoodies">Hoodies</a>
+      <a href="shop.html?cat=Headwear">Headwear</a>
       <a href="shop.html?sort=new">New Arrivals</a>
       <a href="about.html">About</a>
       <a href="faq.html">FAQ</a>
@@ -144,10 +145,11 @@ function footerHTML(){
       <div class="foot-col">
         <h4>Shop</h4>
         <a href="shop.html">Shop All</a>
-        <a href="shop.html?cat=Hoodies">Hoodies</a>
-        <a href="shop.html?cat=T-Shirts">T-Shirts</a>
-        <a href="shop.html?cat=Jackets">Jackets</a>
+        <a href="shop.html?cat=Shorts">Shorts</a>
         <a href="shop.html?cat=Denim">Denim</a>
+        <a href="shop.html?cat=Jackets">Jackets</a>
+        <a href="shop.html?cat=Bottoms">Bottoms</a>
+        <a href="shop.html?cat=Headwear">Headwear</a>
         <a href="shop.html?sort=new">New Arrivals</a>
       </div>
 

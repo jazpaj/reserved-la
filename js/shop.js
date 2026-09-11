@@ -45,7 +45,7 @@ function featured(n){
 }
 
 /* ---- Shop page ---- */
-const CATS=["All","Hoodies","T-Shirts","Shorts","Jackets","Denim","Bottoms","Headwear","Accessories"];
+const CATS=["All","Shorts","Denim","Jackets","Bottoms","Hoodies","Headwear"];
 
 function initShop(){
   const params=new URLSearchParams(location.search);
