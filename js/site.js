@@ -75,9 +75,10 @@ function headerHTML(active){
         ${link('shop.html?cat=Shorts','Shorts','')}
         ${link('shop.html?cat=Denim','Denim','')}
         ${link('shop.html?cat=Jackets','Jackets','')}
+        ${link('shop.html?cat=Bottoms','Bottoms','')}
+        ${link('shop.html?cat=Hoodies','Hoodies','')}
+        ${link('shop.html?cat=Headwear','Headwear','')}
         ${link('shop.html?sort=new','New Arrivals','new')}
-        ${link('about.html','About','about')}
-        ${link('contact.html','Contact','contact')}
       </nav>
       <div class="hd-icons">
         <button class="icon-btn" aria-label="Search" onclick="location.href='shop.html'">${ICON.search}</button>

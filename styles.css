@@ -83,7 +83,8 @@ p{margin:0 0 1em}
 .brand{font-family:var(--font-display);font-size:26px;letter-spacing:.02em;line-height:1;
   text-transform:uppercase;white-space:nowrap;display:flex;align-items:baseline;gap:7px}
 .brand .la{font-size:14px;letter-spacing:.32em;transform:translateY(-2px)}
-.nav{display:flex;align-items:center;gap:30px}
+.nav{display:flex;align-items:center;gap:20px}
+@media(max-width:1024px){.nav{display:none}.burger{display:flex}}
 .nav a{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-soft);position:relative;padding:4px 0}
 .nav a::after{content:"";position:absolute;left:0;bottom:-2px;height:1.5px;width:0;background:var(--ink);transition:.2s}
@@ -460,8 +461,6 @@ section{padding:72px 0}
   .foot-brand{grid-column:1/-1}
 }
 @media(max-width:860px){
-  .nav{display:none}
-  .burger{display:flex}
   .col-grid{grid-template-columns:1fr}
   .editorial .grid{grid-template-columns:1fr;gap:28px}
   .hero-grid{grid-template-columns:1fr;gap:34px}
