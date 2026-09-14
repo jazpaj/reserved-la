@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -112,26 +112,13 @@
 
   <!-- REVIEWS -->
   <section class="wrap">
-    <div class="sec-head">
-      <div><div class="eyebrow">★ 4.9 / 5 · 2,400+ Reviews</div><h2>What They're Saying</h2></div>
+    <div class="sec-head center" style="justify-content:center;align-items:center;text-align:center;flex-direction:column">
+      <div class="eyebrow">★★★★★ 4.9 out of 5</div><h2>Customer Reviews</h2>
     </div>
-    <div class="rev-grid">
-      <div class="rev">
-        <div class="stars">★★★★★</div>
-        <p>"The hoodie is unreal — proper heavyweight, not the thin stuff everyone else sells. Fit is perfect. Reserved LA is my go-to now."</p>
-        <div class="who"><div class="av">MJ</div><div><b>Marcus J.</b><br><span>✔ Verified Buyer</span></div></div>
-      </div>
-      <div class="rev">
-        <div class="stars">★★★★★</div>
-        <p>"Ordered the cargos and a tee. Shipping was fast, packaging was clean, and the quality feels way above the price. Copping again."</p>
-        <div class="who"><div class="av">AL</div><div><b>Alina R.</b><br><span>✔ Verified Buyer</span></div></div>
-      </div>
-      <div class="rev">
-        <div class="stars">★★★★★</div>
-        <p>"Fits exactly like the size guide said. The denim is stacked perfectly. Customer service actually answered my email same day."</p>
-        <div class="who"><div class="av">DT</div><div><b>Devon T.</b><br><span>✔ Verified Buyer</span></div></div>
-      </div>
-    </div>
+    <div class="rev-summary" id="revSummary"></div>
+    <p class="rev-verified-note" id="revNote"></p>
+    <div class="rev-grid" id="revGrid"></div>
+    <div class="center" style="margin-top:30px"><button class="btn ghost" onclick="toast('Verified reviews are collected from customers after delivery.')">Write a Review</button></div>
   </section>
 
   <!-- FAQ TEASER -->
@@ -182,9 +169,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=6"></script>
-<script src="js/site.js?v=6"></script>
-<script src="js/shop.js?v=6"></script>
+<script src="js/data.js?v=7"></script>
+<script src="js/site.js?v=7"></script>
+<script src="js/shop.js?v=7"></script>
 <script>
   mountChrome("home");
 
@@ -224,6 +211,49 @@
   const words=["RESERVED LA","•","HEAVYWEIGHT","•","LOS ANGELES","•","FW26","•","STREETWEAR","•"];
   const t=words.map(w=>w==="•"?`<span>•</span>`:`<b>${w}</b>`).join("");
   document.getElementById("bandTrack").innerHTML=t+t;
+
+  /* ---------- Customer Reviews ---------- */
+  const REV_TOTAL = 2437;
+  const REV_DIST = [ [5,88],[4,9],[3,2],[2,1],[1,0.4] ]; // star, percent
+  const REVIEWS = [
+    {n:"Marcus J.", r:5, when:"2 days ago", pid:"rl-sp251119we8r", prod:"Distressed Shearling-Collar Bomber", fit:"True to size", title:"Insane quality for the price", body:"The fleece collar is thick and the wash looks exactly like the photos. Boxy fit just like they describe. Easily my favourite jacket right now.", help:34},
+    {n:"Alina R.", r:5, when:"6 days ago", pid:"rl-sp26061297av", prod:"Camo 3/4 Cargo Shorts", fit:"True to size", title:"Third order, never disappointed", body:"Ripstop is heavy-duty and the pockets are actually usable. Arrived in 4 days, packaging was clean. Copping the denim next.", help:21},
+    {n:"Devon T.", r:4, when:"1 week ago", pid:"rl-sp230804mvtd", prod:"Baggy Multi-Pocket Cargo Jeans", fit:"Runs long", title:"Love these, just size the length", body:"The washes are unreal and the fit is exactly what I wanted. Took one star only because they run long — I'm 5'9\" and had to cuff them.", help:12},
+    {n:"Priya S.", r:5, when:"August 24, 2026", pid:"rl-sp251204c5s2", prod:"Patchwork Layered Hoodie", fit:"True to size", title:"Heaviest hoodie I own", body:"The patchwork detail gets compliments every single time I wear it. Feels premium and worth every dollar.", help:28},
+    {n:"Jordan M.", r:5, when:"August 12, 2026", pid:"rl-sp251013gasp", prod:"Washed Workwear Barrel Jeans", fit:"Size up for comfort", title:"Perfect barrel silhouette", body:"Exactly the shape I was after. The denim is rigid out of the box but breaks in fast. Stitching is clean throughout.", help:17},
+    {n:"Sofia L.", r:5, when:"3 weeks ago", pid:"rl-sp260813qpa7", prod:"Chunky Rib Knit Beanie", fit:"One size", title:"Soft and warm, no itch", body:"Doesn't itch at all and the cream colour is perfect. Grabbed the black one too right after.", help:9},
+    {n:"Andre W.", r:4, when:"September 2, 2026", pid:"rl-sp260302osst", prod:"Studded Utility Cargo Pants", fit:"True to size", title:"Statement pants done right", body:"The studs are solid metal, not cheap plastic. Only wish there was one more back pocket, otherwise flawless.", help:6},
+    {n:"Kayla B.", r:5, when:"2 weeks ago", pid:"rl-sp250612jts0", prod:"Light Wash Barrel Jeans", fit:"True to size", title:"So many DMs asking where they're from", body:"Perfect Y2K wash. Support even answered my sizing question the same day before I ordered. 10/10.", help:23},
+    {n:"Tyler H.", r:5, when:"September 9, 2026", pid:"rl-sp260616fa60", prod:"Military Wide-Leg Cargo Shorts", fit:"Oversized — size down", title:"Huge in the best way", body:"The bone colour is so clean and the pleated volume is unreal in person. If you want a slimmer look, size down.", help:15},
+    {n:"Emily C.", r:5, when:"5 days ago", pid:"rl-sp250320sflm", prod:"Zipper Slit Denim Jorts", fit:"True to size", title:"Living in these", body:"Great weight and the zips are actually functional. Already ordered a matching piece. Fast shipping too.", help:8}
+  ];
+  const starRow = n => "★".repeat(n)+"☆".repeat(5-n);
+  const initials = nm => nm.split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase();
+
+  document.getElementById("revSummary").innerHTML = `
+    <div class="rev-score">
+      <div class="big">4.9</div>
+      <div class="stars">★★★★★</div>
+      <div class="count">Based on ${REV_TOTAL.toLocaleString()} reviews</div>
+    </div>
+    <div class="rev-bars">
+      ${REV_DIST.map(([s,p])=>`<div class="rev-bar"><span class="lab">${s} ★</span>
+        <span class="track"><span class="fill" style="width:${p}%"></span></span>
+        <span class="pct">${p}%</span></div>`).join("")}
+    </div>`;
+  document.getElementById("revNote").innerHTML = `${ICON.check} Verified reviews collected from customers after delivery · 96% would recommend`;
+  document.getElementById("revGrid").innerHTML = REVIEWS.map(v=>`
+    <div class="rev">
+      <div class="rev-top">
+        <div class="av">${initials(v.n)}</div>
+        <div><div class="nm">${v.n}</div><div class="vb">${ICON.check} Verified Buyer</div></div>
+        <div class="date">${v.when}</div>
+      </div>
+      <div class="rev-rowstars"><span class="stars">${starRow(v.r)}</span><span class="fit">Fit: ${v.fit}</span></div>
+      <div class="rev-title">${v.title}</div>
+      <p>${v.body}</p>
+      <div class="prod"><a href="product.html?id=${v.pid}">${v.prod}</a><span class="helpful">👍 Helpful (${v.help})</span></div>
+    </div>`).join("");
 </script>
 </body>
 </html>

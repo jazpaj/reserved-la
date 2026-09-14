@@ -231,6 +231,42 @@ section{padding:72px 0}
 .rev .who b{font-size:13px}
 .rev .who span{font-size:11px;color:var(--good);letter-spacing:.05em}
 
+/* ---------- Reviews (rich) ---------- */
+.rev-summary{display:grid;grid-template-columns:260px 1fr;gap:36px;align-items:center;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:28px 32px;margin-bottom:26px}
+.rev-score{text-align:center;border-right:1px solid var(--line);padding-right:24px}
+.rev-score .big{font-family:var(--font-display);font-size:64px;line-height:.9}
+.rev-score .stars{color:var(--ink);font-size:17px;letter-spacing:2px;margin:6px 0 6px}
+.rev-score .count{font-size:12px;color:var(--muted);letter-spacing:.03em}
+.rev-bars{display:flex;flex-direction:column;gap:8px}
+.rev-bar{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--muted)}
+.rev-bar .lab{width:36px;text-align:right;white-space:nowrap}
+.rev-bar .track{flex:1;height:8px;background:var(--stone);border-radius:100px;overflow:hidden}
+.rev-bar .fill{height:100%;background:var(--ink);border-radius:100px}
+.rev-bar .pct{width:38px;text-align:right}
+.rev-verified-note{font-size:12px;color:var(--muted);text-align:center;margin-top:-6px;margin-bottom:26px;letter-spacing:.04em}
+.rev-verified-note svg{width:14px;height:14px;vertical-align:-2px;color:var(--good)}
+.rev .rev-top{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.rev .rev-top .av{width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.rev .rev-top .nm{font-size:13.5px;font-weight:700;line-height:1.2}
+.rev .rev-top .vb{font-size:11px;color:var(--good);letter-spacing:.03em;display:flex;align-items:center;gap:3px;margin-top:2px}
+.rev .rev-top .vb svg{width:12px;height:12px}
+.rev .rev-top .date{margin-left:auto;font-size:11.5px;color:var(--muted-2);white-space:nowrap;align-self:flex-start}
+.rev .rev-rowstars{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.rev .rev-rowstars .stars{margin:0}
+.rev .fit{font-size:11px;color:var(--muted);background:var(--cream-2);border:1px solid var(--line);
+  padding:3px 8px;border-radius:100px}
+.rev .rev-title{font-weight:700;font-size:14.5px;margin-bottom:5px}
+.rev .prod{font-size:12px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rev .prod a{color:var(--ink-soft);text-decoration:underline}
+.rev .helpful{font-size:11.5px;color:var(--muted-2);white-space:nowrap}
+@media(max-width:620px){
+  .rev-summary{grid-template-columns:1fr;gap:22px;text-align:center}
+  .rev-score{border-right:none;border-bottom:1px solid var(--line);padding-right:0;padding-bottom:22px}
+}
+
 /* ---------- Newsletter ---------- */
 .news{background:var(--cream-2)}
 .news .box{max-width:640px;margin:0 auto;text-align:center}
