@@ -110,7 +110,10 @@ function initProduct(){
       <div class="pd-price">${priceHTML}</div>
       <p class="pd-desc">${p.desc}</p>
       <div class="opt-group">
-        <div class="lbl">Size ${p.sizes.length>1?'':'· One Size'}</div>
+        <div class="opt-head">
+          <div class="lbl">Size ${p.sizes.length>1?'':'· One Size'}</div>
+          <button type="button" class="size-guide-link" onclick="openSizeGuide('${p.cat}')">📏 Size Guide</button>
+        </div>
         <div class="sizes" id="sizes">${sizeBtns}</div>
       </div>
       <div class="pd-actions">
@@ -156,3 +159,132 @@ function initProduct(){
   const relList=rel.length>=4?rel:PRODUCTS.filter(x=>x.id!==p.id).slice(0,4);
   renderGrid("relatedGrid",relList);
 }
+
+/* =========================================================
+   Size Guide — per-category charts (measurements in inches)
+   ========================================================= */
+const SIZE_CHARTS = {
+  tops: {
+    title: "Tops Size Guide",
+    note: "Garment measurements taken flat. Our tops are cut boxy/oversized — size down for a closer fit.",
+    cols: ["Size","Chest (pit-to-pit)","Length (HPS)","Shoulder","Sleeve"],
+    rows: [
+      ["S", 22, 27, 20, 23],
+      ["M", 23, 28, 21, 23.5],
+      ["L", 24, 29, 22, 24],
+      ["XL", 25, 30, 23, 24.5],
+      ["XXL", 26, 31, 24, 25],
+      ["XXXL", 27, 32, 25, 25.5]
+    ],
+    tips: [
+      "Chest is measured armpit-to-armpit and doubled for full circumference.",
+      "Length is from the highest point of the shoulder straight down to the hem."
+    ]
+  },
+  pants: {
+    title: "Pants & Denim Size Guide",
+    note: "Relaxed 'to-fit' body measurements. Waistbands stretch on drawcord styles. Fits are baggy/wide-leg.",
+    cols: ["Size","Waist (to fit)","Hip","Inseam","Outseam"],
+    rows: [
+      ["S", 28, 42, 30, 40],
+      ["M", 30, 44, 30.5, 41],
+      ["L", 32, 46, 31, 42],
+      ["XL", 34, 48, 31.5, 43],
+      ["XXL", 36, 50, 32, 44],
+      ["XXXL", 38, 52, 32, 44.5]
+    ],
+    tips: [
+      "Waist is the body measurement the size is designed to fit.",
+      "Inseam is the inner-leg seam; outseam runs from waist to hem."
+    ]
+  },
+  shorts: {
+    title: "Shorts Size Guide",
+    note: "Relaxed 'to-fit' body measurements. Most shorts sit at a knee-length, wide-leg cut.",
+    cols: ["Size","Waist (to fit)","Hip","Inseam","Outseam"],
+    rows: [
+      ["S", 28, 42, 8, 22],
+      ["M", 30, 44, 8.5, 23],
+      ["L", 32, 46, 9, 24],
+      ["XL", 34, 48, 9.5, 25],
+      ["XXL", 36, 50, 10, 26],
+      ["XXXL", 38, 52, 10.5, 27]
+    ],
+    tips: [
+      "Waist is the body measurement the size is designed to fit.",
+      "Inseam is the inner-leg length; a longer outseam means a longer short."
+    ]
+  },
+  headwear: {
+    title: "Headwear Size Guide",
+    note: "One size fits most. Beanies are stretch-knit; caps have an adjustable back strap.",
+    cols: ["Size","Head Circumference","Fits"],
+    rows: [
+      ["One Size", "21.5 – 24 in", "Most adults"]
+    ],
+    tips: [
+      "Measure around your head about 1 in above the ears for circumference.",
+      "Beanies stretch to fit; caps adjust via the rear strap/snap."
+    ],
+    noUnits: true
+  }
+};
+
+function sizeGuideType(cat){
+  if(cat==="Denim"||cat==="Bottoms") return "pants";
+  if(cat==="Shorts") return "shorts";
+  if(cat==="Headwear") return "headwear";
+  return "tops"; // Hoodies, Jackets, T-Shirts
+}
+
+let _sgUnit = "in";
+function openSizeGuide(cat){
+  const chart = SIZE_CHARTS[sizeGuideType(cat)];
+  let modal = document.getElementById("sizeModal");
+  if(!modal){
+    modal = document.createElement("div");
+    modal.id = "sizeModal";
+    modal.className = "sgm";
+    document.body.appendChild(modal);
+  }
+  _sgUnit = "in";
+  modal._chart = chart;
+  renderSizeGuide();
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeSizeGuide(){
+  const m = document.getElementById("sizeModal");
+  if(m){ m.classList.remove("open"); document.body.style.overflow=""; }
+}
+function sgSetUnit(u){ _sgUnit = u; renderSizeGuide(); }
+function renderSizeGuide(){
+  const m = document.getElementById("sizeModal"); if(!m) return;
+  const chart = m._chart;
+  const conv = v => {
+    if(typeof v !== "number") return v;                 // text cells (headwear) untouched
+    return _sgUnit==="cm" ? Math.round(v*2.54*10)/10 : v;
+  };
+  const head = chart.cols.map(c=>`<th>${c}</th>`).join("");
+  const body = chart.rows.map(r=>"<tr>"+r.map(c=>`<td>${conv(c)}</td>`).join("")+"</tr>").join("");
+  const units = chart.noUnits ? "" : `
+    <div class="sg-units" role="group" aria-label="Units">
+      <button class="${_sgUnit==='in'?'active':''}" onclick="sgSetUnit('in')">INCHES</button>
+      <button class="${_sgUnit==='cm'?'active':''}" onclick="sgSetUnit('cm')">CM</button>
+    </div>`;
+  m.innerHTML = `
+    <div class="scrim" onclick="closeSizeGuide()"></div>
+    <div class="box" role="dialog" aria-modal="true" aria-label="${chart.title}">
+      <div class="sg-head"><h3>${chart.title}</h3>
+        <button class="icon-btn" aria-label="Close" onclick="closeSizeGuide()">${ICON.close}</button></div>
+      <div class="sg-body">
+        <p class="sg-note">${chart.note}</p>
+        ${units}
+        <div class="sg-table-wrap"><table class="sg-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+        <div class="sg-tips"><h4>How to measure</h4><ul>${chart.tips.map(t=>`<li>${t}</li>`).join("")}</ul>
+          <p style="font-size:12px;color:var(--muted);margin-top:10px">Measurements are approximate and may vary ±0.5 in due to the washed, hand-finished nature of each piece.</p>
+        </div>
+      </div>
+    </div>`;
+}
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSizeGuide(); });
