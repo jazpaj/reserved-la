@@ -76,6 +76,7 @@ function initShop(){
     u.searchParams.set("cat",activeCat);
     if(sort!=="featured") u.searchParams.set("sort",sort); else u.searchParams.delete("sort");
     history.replaceState({},"",u);
+    if(typeof syncHeaderNav==="function") syncHeaderNav();
   }
   chipWrap.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b)return; activeCat=b.dataset.cat; apply(); });
   if(sortSel) sortSel.addEventListener("change",e=>{ sort=e.target.value; apply(); });

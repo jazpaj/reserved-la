@@ -63,8 +63,34 @@ function announceHTML(){
 }
 
 /* ---------- Header ---------- */
+// Active nav is derived from the CURRENT URL (page + ?cat / ?sort), not a
+// hardcoded key — so category and New Arrivals links highlight correctly.
+function navHrefActive(href){
+  const cur = {
+    page: (location.pathname.split('/').pop() || 'index.html'),
+    cat: new URLSearchParams(location.search).get('cat'),
+    sort: new URLSearchParams(location.search).get('sort')
+  };
+  if(cur.cat === 'All') cur.cat = null;
+  const q = href.indexOf('?');
+  const page = (q<0 ? href : href.slice(0,q)).split('/').pop();
+  const hp = new URLSearchParams(q<0 ? '' : href.slice(q+1));
+  if(page !== cur.page) return false;
+  if(page !== 'shop.html') return true;
+  const hCat = hp.get('cat'), hSort = hp.get('sort');
+  if(!hCat && !hSort) return !cur.cat && !cur.sort;   // Shop All
+  if(hCat) return hCat === cur.cat;                    // a category
+  if(hSort) return hSort === cur.sort && !cur.cat;     // New Arrivals
+  return false;
+}
+// Re-evaluate header underlines against the live URL (used after in-page filtering)
+function syncHeaderNav(){
+  document.querySelectorAll('.site-header .nav a').forEach(a=>{
+    a.classList.toggle('active', navHrefActive(a.getAttribute('href')));
+  });
+}
 function headerHTML(active){
-  const link=(href,label,key)=>`<a href="${href}" class="${active===key?'active':''}">${label}</a>`;
+  const link=(href,label)=>`<a href="${href}" class="${navHrefActive(href)?'active':''}">${label}</a>`;
   return `
   <header class="site-header">
     <div class="wrap hd">
