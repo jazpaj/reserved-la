@@ -144,6 +144,15 @@ p{margin:0 0 1em}
 .feature-copy p{color:var(--muted);max-width:420px;margin-bottom:24px}
 .feature.reverse .feature-media{order:2}
 
+/* ---------- Visit / map ---------- */
+.visit{text-align:center}
+.visit .addr{font-size:16px;color:var(--ink-soft);line-height:1.7;margin:6px 0 4px}
+.visit .addr b{font-weight:700}
+.visit .hours{font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:22px}
+.map-wrap{position:relative;width:100%;aspect-ratio:16/7;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--cream-2)}
+.map-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media(max-width:620px){.map-wrap{aspect-ratio:4/5}}
+
 /* ---------- Trust strip ---------- */
 .trust{background:var(--paper);border-bottom:1px solid var(--line)}
 .trust .row{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
