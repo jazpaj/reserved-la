@@ -216,7 +216,7 @@ function footerHTML(){
 
     <div class="wrap nf-bottom">
       <div class="tagline">DESIGNED IN LOS ANGELES · WORN WORLDWIDE</div>
-      <div>© <span id="yr"></span> ${BRAND.legalName}. All rights reserved. EIN ${BRAND.ein}.</div>
+      <div>© <span id="yr"></span> ${BRAND.legalName}. All rights reserved.</div>
     </div>
   </footer>`;
 }
