@@ -15,7 +15,8 @@ const ICON = {
   lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg>',
   ig:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
-  tiktok:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2.1 1.6 3.7 3.7 4v2.6c-1.4 0-2.7-.4-3.7-1.1V15a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.7a2.9 2.9 0 1 0 2 2.8V3z"/></svg>'
+  tiktok:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2.1 1.6 3.7 3.7 4v2.6c-1.4 0-2.7-.4-3.7-1.1V15a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.7a2.9 2.9 0 1 0 2 2.8V3z"/></svg>',
+  threads:'<svg viewBox="0 0 192 192" fill="currentColor"><path d="M141.5 89c-.7-.3-1.4-.6-2.1-.9-1.2-22.9-13.8-36-34.9-36.2h-.3c-12.6 0-23.1 5.4-29.6 15.2l11.6 8c4.8-7.3 12.4-8.9 18-8.9h.2c7 .05 12.3 2.1 15.7 6.1 2.4 2.9 4 6.9 4.8 11.9-6-1-12.5-1.3-19.4-.9-19.5 1.1-32 12.5-31.2 28.3.4 8 4.4 14.9 11.2 19.4 5.8 3.8 13.2 5.7 21 5.3 10.3-.6 18.4-4.5 24-11.7 4.3-5.4 7-12.5 8.2-21.4 4.9 2.9 8.5 6.8 10.5 11.4 3.4 7.9 3.6 20.8-6.9 31.3-9.2 9.2-20.3 13.2-37 13.3-18.5-.1-32.5-6.1-41.6-17.7-8.5-10.9-12.9-26.6-13.1-46.7.2-20.1 4.6-35.8 13.1-46.7 9.1-11.6 23.1-17.6 41.6-17.7 18.6.1 32.9 6.1 42.4 17.8 4.7 5.8 8.2 13 10.5 21.4l13.6-3.6c-2.8-10.4-7.2-19.3-13.2-26.7C154.3 8.9 136.5.9 113.3.7h-.1C89.9.9 72.4 9 60.5 24 49.9 37.3 44.4 55.8 44.2 79.9v.2c.2 24.1 5.7 42.6 16.3 55.9 11.9 15 29.4 23.1 52.7 23.3h.1c20.7-.1 35.3-5.5 47.3-17.5 15.7-15.7 15.2-35.4 10-47.5-3.7-8.6-10.8-15.6-20.6-20.3zm-36.3 46.7c-8.6.5-17.5-3.4-18-11.5-.3-6 4.3-12.7 19.2-13.6 1.7-.1 3.4-.15 5-.15 5.4 0 10.5.5 15.1 1.5-1.7 21.4-11.8 23.3-21.3 23.8z"/></svg>'
 };
 
 /* ---------- Cart ---------- */
@@ -165,7 +166,7 @@ function footerHTML(){
         </p>
         <div class="foot-social">
           <a href="${BRAND.instagram}" aria-label="Instagram" target="_blank" rel="noopener">${ICON.ig}</a>
-          <a href="${BRAND.tiktok}" aria-label="TikTok" target="_blank" rel="noopener">${ICON.tiktok}</a>
+          <a href="${BRAND.threads}" aria-label="Threads" target="_blank" rel="noopener">${ICON.threads}</a>
         </div>
       </div>
 

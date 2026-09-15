@@ -14,9 +14,10 @@ const BRAND = {
   address2: "Rancho Cordova, California 95670",
   country: "United States",
   hours: "Customer Service: 7 days a week, 8AM–8PM PT",
-  instagram: "https://instagram.com/reservedla",
-  instagramHandle: "@reservedla",
-  tiktok: "https://tiktok.com/@reservedla",
+  instagram: "https://www.instagram.com/reservedhollywood/",
+  instagramHandle: "@reservedhollywood",
+  threads: "https://www.threads.com/@reservedhollywood?xmt=AQG0-ngZoo55GiSwxFtRLDprA-D4MRIE2RD43iFKkv5hNFs",
+  threadsHandle: "@reservedhollywood",
   freeShipThreshold: 150,
   currency: "USD"
 };
