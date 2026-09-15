@@ -223,7 +223,9 @@ section.wrap{padding-top:64px;padding-bottom:64px}
 .band .track b{font-family:var(--font-display);font-weight:400;padding:18px 28px;font-size:34px}
 
 /* ---------- Reviews ---------- */
-.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.rev-grid .rev{display:flex;flex-direction:column}
+.rev-grid .rev p{flex:1}
 .rev{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
 .rev .stars{margin-bottom:12px}
 .rev p{font-size:15px}
@@ -602,7 +604,7 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
   .feature-media{min-height:300px}
   .feature.reverse .feature-media{order:0}
   .feature-copy{padding:36px 28px}
-  .rev-grid{grid-template-columns:1fr}
+  .rev-grid{grid-template-columns:repeat(2,1fr)}
   .pd{grid-template-columns:1fr;gap:28px}
   .pd-media{position:static}
   .contact-grid{grid-template-columns:1fr;gap:28px}
@@ -613,6 +615,7 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
 @media(max-width:620px){
   .wrap{padding:0 18px}
   .p-grid{grid-template-columns:repeat(2,1fr);gap:16px 12px}
+  .rev-grid{grid-template-columns:1fr}
   section{padding:52px 0}
   section.wrap{padding-top:48px;padding-bottom:48px}
   .hero-inner{padding:64px 18px 72px}
