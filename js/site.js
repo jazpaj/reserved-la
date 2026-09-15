@@ -161,8 +161,7 @@ function footerHTML(){
           ${BRAND.address2}<br>
           ${BRAND.country}<br><br>
           <a href="mailto:${BRAND.email}">${BRAND.email}</a><br>
-          <a href="${BRAND.phoneHref}">${BRAND.phone}</a><br>
-          ${BRAND.hours}
+          <a href="${BRAND.phoneHref}">${BRAND.phone}</a>
         </p>
         <div class="foot-social">
           <a href="${BRAND.instagram}" aria-label="Instagram" target="_blank" rel="noopener">${ICON.ig}</a>
