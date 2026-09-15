@@ -134,26 +134,26 @@ function headerHTML(active){
   </div>`;
 }
 
-/* ---------- Footer ---------- */
+/* ---------- Footer (redesigned) ---------- */
 function footerHTML(){
   return `
-  <footer class="site-footer">
-    <div class="foot-news">
-      <div class="wrap in">
-        <div>
-          <h3>Join The List</h3>
-          <p>Early access to drops, restock alerts, and members-only discounts.</p>
-        </div>
-        <form onsubmit="return newsSignup(event)">
-          <input type="email" required placeholder="Enter your email" aria-label="Email">
-          <button class="btn on-dark" type="submit">Subscribe</button>
-        </form>
-      </div>
+  <footer class="site-footer nf">
+    <div class="nf-texture"></div>
+
+    <div class="wrap nf-news">
+      <div class="eyebrow">Reserved LA Club</div>
+      <h3>Join The List</h3>
+      <p>Early access to drops, restock alerts, and members-only discounts.</p>
+      <form onsubmit="return newsSignup(event)">
+        <input type="email" required placeholder="Enter your email" aria-label="Email">
+        <button class="btn on-dark" type="submit">Subscribe</button>
+      </form>
     </div>
 
-    <div class="wrap foot-main">
-      <div class="foot-brand">
-        <div class="logo">RESERVED LA</div>
+    <div class="wrap nf-mark"><span>RESERVED&nbsp;LA</span></div>
+
+    <div class="wrap nf-main">
+      <div class="nf-contact">
         <p class="legal">
           <b>${BRAND.name}</b> — a DBA of <b>${BRAND.legalName}</b><br>
           ${BRAND.address1}<br>
@@ -169,40 +169,41 @@ function footerHTML(){
         </div>
       </div>
 
-      <div class="foot-col">
-        <h4>Shop</h4>
-        <a href="shop.html">Shop All</a>
-        <a href="shop.html?cat=Shorts">Shorts</a>
-        <a href="shop.html?cat=Denim">Denim</a>
-        <a href="shop.html?cat=Jackets">Jackets</a>
-        <a href="shop.html?cat=Bottoms">Bottoms</a>
-        <a href="shop.html?cat=Headwear">Headwear</a>
-        <a href="shop.html?sort=new">New Arrivals</a>
-      </div>
+      <div class="nf-links">
+        <div class="foot-col">
+          <h4>Shop</h4>
+          <a href="shop.html">Shop All</a>
+          <a href="shop.html?cat=Shorts">Shorts</a>
+          <a href="shop.html?cat=Denim">Denim</a>
+          <a href="shop.html?cat=Jackets">Jackets</a>
+          <a href="shop.html?cat=Bottoms">Bottoms</a>
+          <a href="shop.html?cat=Headwear">Headwear</a>
+          <a href="shop.html?sort=new">New Arrivals</a>
+        </div>
 
-      <div class="foot-col">
-        <h4>Help</h4>
-        <a href="contact.html">Contact Us</a>
-        <a href="faq.html">FAQ</a>
-        <a href="shipping-policy.html">Shipping &amp; Fulfillment</a>
-        <a href="refund-policy.html">Returns &amp; Refunds</a>
-        <a href="about.html">About Us</a>
-        <a href="track-order.html">Track Your Order</a>
-      </div>
+        <div class="foot-col">
+          <h4>Help</h4>
+          <a href="contact.html">Contact Us</a>
+          <a href="faq.html">FAQ</a>
+          <a href="shipping-policy.html">Shipping &amp; Fulfillment</a>
+          <a href="refund-policy.html">Returns &amp; Refunds</a>
+          <a href="about.html">About Us</a>
+          <a href="track-order.html">Track Your Order</a>
+        </div>
 
-      <div class="foot-col">
-        <h4>Legal</h4>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="refund-policy.html">Refund Policy</a>
-        <a href="shipping-policy.html">Fulfillment Policy</a>
-        <a href="sms-terms.html">SMS Terms &amp; Privacy</a>
-        <a href="business-disclaimer.html">Business Disclaimer</a>
+        <div class="foot-col">
+          <h4>Legal</h4>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="refund-policy.html">Refund Policy</a>
+          <a href="shipping-policy.html">Fulfillment Policy</a>
+          <a href="sms-terms.html">SMS Terms &amp; Privacy</a>
+          <a href="business-disclaimer.html">Business Disclaimer</a>
+        </div>
       </div>
     </div>
 
-    <div class="wrap foot-pay">
-      <div class="secure-note">${ICON.lock} Secure Checkout · SSL Encrypted · All prices in USD</div>
+    <div class="wrap nf-pay">
       <div class="pay-badges">
         <span class="pb">VISA</span>
         <span class="pb">MASTERCARD</span>
@@ -212,9 +213,10 @@ function footerHTML(){
         <span class="pb">SHOP&nbsp;PAY</span>
         <span class="pb ssl">🛡 SSL SECURED</span>
       </div>
+      <div class="secure-note">${ICON.lock} Secure Checkout · SSL Encrypted · All prices in USD</div>
     </div>
 
-    <div class="wrap foot-bottom">
+    <div class="wrap nf-bottom">
       <div class="tagline">DESIGNED IN LOS ANGELES · WORN WORLDWIDE</div>
       <div>© <span id="yr"></span> ${BRAND.legalName}. All rights reserved. EIN ${BRAND.ein}.</div>
     </div>

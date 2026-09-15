@@ -318,6 +318,61 @@ section{padding:72px 0}
   justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px;color:#8b877f;letter-spacing:.04em}
 .foot-bottom .tagline{font-family:var(--font-display);letter-spacing:.06em;color:#a7a29a}
 
+/* ---------- Footer (redesigned) ---------- */
+.nf{position:relative;overflow:hidden;background:var(--ink);color:#cfcbc2}
+.nf-texture{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.6;
+  background:
+   radial-gradient(900px 360px at 50% -40%,rgba(255,255,255,.10),transparent 70%),
+   repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 2px,transparent 2px 22px);}
+.nf > .wrap{position:relative;z-index:1}
+
+/* newsletter — centered */
+.nf-news{text-align:center;padding:56px 24px 40px;border-bottom:1px solid rgba(255,255,255,.12)}
+.nf-news .eyebrow{color:rgba(255,255,255,.55)}
+.nf-news h3{font-family:var(--font-display);text-transform:uppercase;color:#fff;
+  font-size:clamp(30px,5vw,48px);line-height:1;margin:10px 0 8px}
+.nf-news p{color:#a7a29a;font-size:14px;margin:0 auto 22px;max-width:440px}
+.nf-news form{display:flex;gap:10px;max-width:460px;margin:0 auto}
+.nf-news input{flex:1;padding:14px 18px;border:1px solid rgba(255,255,255,.25);background:transparent;
+  color:#fff;border-radius:100px}
+.nf-news input::placeholder{color:#8b877f}
+.nf-news form .btn{border-radius:100px}
+
+/* mega wordmark */
+.nf-mark{padding:34px 24px 18px;text-align:center;line-height:.8;overflow:hidden}
+.nf-mark span{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.02em;
+  font-size:clamp(58px,17vw,230px);color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.22);
+  white-space:nowrap;display:inline-block}
+
+/* main: contact + link columns */
+.nf-main{display:grid;grid-template-columns:1.05fr 1.6fr;gap:44px;padding:14px 24px 44px;
+  border-top:1px solid rgba(255,255,255,.12)}
+.nf-contact .legal{color:#a7a29a;font-size:13.5px;line-height:1.75;margin:0 0 16px}
+.nf-contact .legal b{color:#e7e3da;font-weight:600}
+.nf-contact .legal a{color:#a7a29a}
+.nf-contact .legal a:hover{color:#fff}
+.nf-links{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+
+/* utility bar */
+.nf-pay{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  padding:22px 24px;border-top:1px solid rgba(255,255,255,.12)}
+.nf-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:18px 24px 44px;border-top:1px solid rgba(255,255,255,.12);
+  font-size:12px;color:#8b877f;letter-spacing:.04em}
+.nf-bottom .tagline{font-family:var(--font-display);letter-spacing:.06em;color:#a7a29a}
+
+@media(max-width:820px){
+  .nf-main{grid-template-columns:1fr;gap:34px}
+  .nf-links{gap:22px}
+  .nf-pay{justify-content:center;text-align:center}
+}
+@media(max-width:520px){
+  .nf-links{grid-template-columns:1fr 1fr}
+  .nf-news form{flex-direction:column}
+  .nf-news input,.nf-news form .btn{border-radius:4px}
+  .nf-bottom{flex-direction:column;gap:8px;text-align:center}
+}
+
 /* ---------- Cart drawer ---------- */
 .cart-drawer{position:fixed;inset:0;z-index:90;visibility:hidden;pointer-events:none}
 .cart-drawer.open{visibility:visible;pointer-events:auto}
