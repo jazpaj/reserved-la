@@ -155,7 +155,7 @@ function footerHTML(){
     <div class="wrap nf-main">
       <div class="nf-contact">
         <p class="legal">
-          <b>${BRAND.name}</b> — a DBA of <b>${BRAND.legalName}</b><br>
+          <b>${BRAND.name}</b> — <b>${BRAND.legalName}</b><br>
           ${BRAND.address1}<br>
           ${BRAND.address2}<br>
           ${BRAND.country}<br><br>
@@ -195,10 +195,8 @@ function footerHTML(){
           <h4>Legal</h4>
           <a href="privacy-policy.html">Privacy Policy</a>
           <a href="terms.html">Terms &amp; Conditions</a>
-          <a href="refund-policy.html">Refund Policy</a>
+          <a href="refund-policy.html">Refunds</a>
           <a href="shipping-policy.html">Fulfillment Policy</a>
-          <a href="sms-terms.html">SMS Terms &amp; Privacy</a>
-          <a href="business-disclaimer.html">Business Disclaimer</a>
         </div>
       </div>
     </div>
