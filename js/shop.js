@@ -109,7 +109,6 @@ function initProduct(){
       <h1>${p.name}</h1>
       ${stars(p.rating,p.reviews)}
       <div class="pd-price">${priceHTML}</div>
-      <p class="pd-desc">${p.desc}</p>
       <div class="opt-group">
         <div class="opt-head">
           <div class="lbl">Size ${p.sizes.length>1?'':'· One Size'}</div>
@@ -131,6 +130,15 @@ function initProduct(){
         <div class="f">${ICON.lock} Secure SSL checkout · Visa, Mastercard, Amex, Apple Pay</div>
         <div class="f">${ICON.check} 100% authentic — designed in Los Angeles</div>
       </div>
+      <details class="pd-acc">
+        <summary><span>Description</span><span class="pd-acc-ico" aria-hidden="true"></span></summary>
+        <div class="pd-acc-body">
+          ${(p.story&&p.story[0])?`<p>${p.story[0]}</p>`:(p.desc?`<p>${p.desc}</p>`:``)}
+          ${(p.story&&p.story[1])?`<p>${p.story[1]}</p>`:``}
+          ${p.model?`<p class="pd-model">${p.model}</p>`:``}
+          ${(p.features&&p.features.length)?`<h3>Fits &amp; Features</h3><ul class="pd-flist">${p.features.map(f=>`<li>${f}</li>`).join("")}</ul>`:``}
+        </div>
+      </details>
     </div>
   </div>`;
 
