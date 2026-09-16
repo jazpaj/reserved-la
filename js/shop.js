@@ -155,9 +155,20 @@ function initProduct(){
     addToCart(p.id,selectedSize,parseInt(document.getElementById("pdQ").textContent));
   });
 
-  // related
-  const rel=PRODUCTS.filter(x=>x.cat===p.cat&&x.id!==p.id).slice(0,4);
-  const relList=rel.length>=4?rel:PRODUCTS.filter(x=>x.id!==p.id).slice(0,4);
+  // "Complete The Fit" — pair with pieces from OTHER categories for a full outfit
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+  const otherCats = CATS.filter(c=>c!=="All" && c!==p.cat).sort(()=>Math.random()-0.5);
+  const relList = [];
+  otherCats.forEach(c=>{
+    if(relList.length>=4) return;
+    const items = PRODUCTS.filter(x=>x.cat===c && x.id!==p.id);
+    if(items.length) relList.push(pick(items));
+  });
+  // backfill (unlikely) with any remaining products from other categories
+  if(relList.length<4){
+    PRODUCTS.filter(x=>x.cat!==p.cat && x.id!==p.id && !relList.includes(x))
+      .slice(0,4-relList.length).forEach(x=>relList.push(x));
+  }
   renderGrid("relatedGrid",relList);
 }
 
