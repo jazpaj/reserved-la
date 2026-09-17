@@ -130,7 +130,7 @@ function initProduct(){
         <div class="f">${ICON.lock} Secure SSL checkout · Visa, Mastercard, Amex, Apple Pay</div>
         <div class="f">${ICON.check} 100% authentic — designed in Los Angeles</div>
       </div>
-      <details class="pd-acc">
+      <details class="pd-acc" open>
         <summary><span>Description</span><span class="pd-acc-ico" aria-hidden="true"></span></summary>
         <div class="pd-acc-body">
           ${(p.story&&p.story[0])?`<p>${p.story[0]}</p>`:(p.desc?`<p>${p.desc}</p>`:``)}
