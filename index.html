@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
-<link rel="stylesheet" href="styles.css?v=88">
+<link rel="stylesheet" href="styles.css?v=89">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -181,9 +181,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=88"></script>
-<script src="js/site.js?v=88"></script>
-<script src="js/shop.js?v=88"></script>
+<script src="js/data.js?v=89"></script>
+<script src="js/site.js?v=89"></script>
+<script src="js/shop.js?v=89"></script>
 <script>
   mountChrome("home");
 
@@ -197,12 +197,12 @@
   // collections
   const cats=[["Shorts","Cargos, Jorts & Camo"],["Denim","Baggy & Barrel"],["Jackets","Outerwear"],["Bottoms","Cargos & Sweats"],["Headwear","Caps & Beanies"],["Hoodies","Heavyweight Fleece"]];
   const tileImg={
-    "Shorts":"assets/products/rl-sp26061297av-hero.jpg",
-    "Denim":"assets/products/rl-sp251104soik-hero.jpg",
-    "Jackets":"assets/products/rl-sp251119we8r-hero.jpg",
-    "Bottoms":"assets/products/rl-sp260302osst-hero.jpg",
-    "Headwear":"assets/products/rl-sp260813qpa7-hero4.jpg",
-    "Hoodies":"assets/products/rl-sp251204c5s2-hero.jpg"
+    "Shorts":"assets/products/rl-sp26061297av-front2.jpg",
+    "Denim":"assets/products/rl-sp251104soik-front.jpg",
+    "Jackets":"assets/products/rl-sp251119we8r-front.jpg",
+    "Bottoms":"assets/products/rl-sp260302osst-front.jpg",
+    "Headwear":"assets/products/rl-sp260813qpa7-front.jpg",
+    "Hoodies":"assets/products/rl-sp251204c5s2-front.jpg"
   };
   document.getElementById("colGrid").innerHTML=cats.map(([c,sub])=>`
     <a class="col-tile" href="shop.html?cat=${encodeURIComponent(c)}">
