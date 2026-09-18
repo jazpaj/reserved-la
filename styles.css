@@ -112,6 +112,34 @@ p{margin:0 0 1em}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;background:var(--ink);color:#fff;overflow:hidden}
+
+/* ---------- Centered campaign hero ---------- */
+.hero-centered{background-color:var(--ink);background-size:cover;background-position:center 30%;background-repeat:no-repeat;
+  min-height:clamp(560px,84vh,820px);display:flex;align-items:center;justify-content:center;text-align:center}
+.hero-centered .hero-scrim{position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(12,12,14,.62) 0%,rgba(12,12,14,.34) 34%,rgba(12,12,14,.34) 58%,rgba(12,12,14,.82) 100%)}
+.hero-c{position:relative;z-index:2;max-width:760px;padding:120px 24px 64px;display:flex;flex-direction:column;align-items:center}
+.hero-c .hero-pill{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.32);border-radius:100px;padding:8px 16px;backdrop-filter:blur(6px)}
+.hero-c .hero-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#7bed9f;box-shadow:0 0 0 3px rgba(123,237,159,.25)}
+.hero-c h1{font-family:var(--font-display);text-transform:uppercase;
+  font-size:clamp(62px,11vw,168px);line-height:.82;letter-spacing:.005em;margin:22px 0 0;
+  text-shadow:0 4px 40px rgba(0,0,0,.4)}
+.hero-c h1 .out{-webkit-text-stroke:1.5px #fff;color:transparent}
+.hero-c .sub{max-width:560px;color:rgba(255,255,255,.9);font-size:17px;line-height:1.6;margin:22px auto 32px;
+  text-shadow:0 2px 16px rgba(0,0,0,.45)}
+.hero-c .hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.hero-c .hero-cta .ghost{color:#fff;border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+.hero-c .hero-trust{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:26px;
+  font-size:12.5px;color:rgba(255,255,255,.82);flex-wrap:wrap;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.hero-c .hero-trust span{display:inline-flex;align-items:center;gap:7px}
+.hero-c .hero-trust span::before{content:"";width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.6)}
+@media(max-width:620px){
+  .hero-centered{min-height:78vh;background-position:center 28%}
+  .hero-c{padding:100px 18px 52px}
+  .hero-c .hero-trust{gap:10px 16px}
+}
 .hero-inner{max-width:var(--maxw);margin:0 auto;padding:64px 24px 0;position:relative;z-index:2}
 .hero-bg{position:absolute;inset:0;z-index:1;opacity:.5;
   background:
