@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Checkout · RESERVED LA</title>
-<meta name="description" content="Secure checkout — Reserved LA. SSL-encrypted. All prices in USD.">
+<meta name="description" content="Secure checkout — Reserved LA. Encrypted. All prices in USD.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
-<link rel="stylesheet" href="styles.css?v=98">
+<link rel="stylesheet" href="styles.css?v=100">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -26,8 +26,8 @@
 </main>
 
 <div id="footer-slot"></div>
-<script src="js/data.js?v=98"></script>
-<script src="js/site.js?v=98"></script>
+<script src="js/data.js?v=100"></script>
+<script src="js/site.js?v=100"></script>
 <script>
 mountChrome("");
 
@@ -69,7 +69,7 @@ mountChrome("");
     root.innerHTML = `
     <form class="checkout-grid" id="coForm" novalidate>
       <div class="co-main">
-        <div class="co-badge">${ICON.lock} Secure, SSL-encrypted checkout · all prices in USD</div>
+        <div class="co-badge">${ICON.lock} Secure, encrypted checkout · all prices in USD</div>
 
         <div class="co-section">
           <h2>Contact</h2>
@@ -138,7 +138,7 @@ mountChrome("");
         <label class="co-check"><input type="checkbox" name="agree" id="agree" onchange="document.getElementById('payBtn').disabled=!this.checked"> <span>I agree to the <a href="terms.html">Terms &amp; Conditions</a>, <a href="refund-policy.html">Refund Policy</a>, and <a href="privacy-policy.html">Privacy Policy</a>.</span></label>
         <button type="submit" class="btn block pay-btn" id="payBtn" disabled>${ICON.lock} Pay ${fmt(t.total)}</button>
         <div class="pay-hint" id="payHint"></div>
-        <div class="secure-line">${ICON.lock} Secure SSL Checkout · 256-bit encryption</div>
+        <div class="secure-line">${ICON.lock} Secure Checkout · 256-bit encryption</div>
         <div class="co-pays"><span class="pb">VISA</span><span class="pb">MASTERCARD</span><span class="pb">AMEX</span><span class="pb">DISCOVER</span><span class="pb">APPLE&nbsp;PAY</span></div>
         <div style="text-align:center"><a class="co-back" href="shop.html">← Continue shopping</a></div>
       </aside>

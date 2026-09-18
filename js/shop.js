@@ -127,7 +127,7 @@ function initProduct(){
       <div class="pd-feats">
         <div class="f">${ICON.truck} Free US shipping on orders $150+ · ships in 1–2 business days</div>
         <div class="f">${ICON.refresh} 30-day easy returns on unworn items</div>
-        <div class="f">${ICON.lock} Secure SSL checkout · Visa, Mastercard, Amex, Apple Pay</div>
+        <div class="f">${ICON.lock} Secure checkout · Visa, Mastercard, Amex, Apple Pay</div>
         <div class="f">${ICON.check} 100% authentic — designed in Los Angeles</div>
       </div>
       <details class="pd-acc" open>

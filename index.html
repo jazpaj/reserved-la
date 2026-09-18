@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
-<link rel="stylesheet" href="styles.css?v=98">
+<link rel="stylesheet" href="styles.css?v=100">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -30,24 +30,36 @@
   <!-- HERO -->
   <section class="hero" style="padding:0">
     <div class="hero-bg"></div>
-    <div class="hero-inner hero-grid">
-      <div class="hero-copy">
-        <div class="eyebrow">FW26 Collection · Now Live</div>
-        <h1>WEAR<br><span class="out">RESERVED</span></h1>
-        <p class="sub">Elevated streetwear essentials built from heavyweight fabrics and clean silhouettes. Designed in Los Angeles, made to be lived in.</p>
-        <div class="hero-cta">
-          <a class="btn on-dark" href="shop.html">Shop The Collection</a>
-          <a class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.5)" href="shop.html?sort=new">New Arrivals</a>
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-pill">FW26 Collection · Now Live</div>
+          <h1>WEAR<br><span class="out">RESERVED</span></h1>
+          <p class="sub">Elevated streetwear essentials built from heavyweight fabrics and clean silhouettes. Designed in Los Angeles, made to be lived in.</p>
+          <div class="hero-cta">
+            <a class="btn on-dark" href="shop.html">Shop The Collection</a>
+            <a class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.5)" href="shop.html?sort=new">New Arrivals</a>
+          </div>
+          <div class="hero-trust">
+            <span>Free US shipping over $150</span>
+            <span>30-day easy returns</span>
+          </div>
         </div>
-        <div class="hero-stats">
-          <div class="st"><b>12K+</b><span>Orders Shipped</span></div>
-          <div class="st"><b>4.9★</b><span>2,400+ Reviews</span></div>
-          <div class="st"><b>100%</b><span>Authentic</span></div>
+        <div class="hero-media">
+          <div class="m-main">
+            <img src="assets/lifestyle/hero.jpg" alt="Reserved LA streetwear look">
+            <span class="tagchip">FW26 · New Season</span>
+          </div>
+          <div class="m-inset">
+            <img src="assets/lifestyle/life-industrial.jpg" alt="Reserved LA studio look">
+          </div>
         </div>
       </div>
-      <div class="hero-media">
-        <img src="assets/lifestyle/hero.jpg" alt="Reserved LA streetwear look">
-        <span class="tagchip">FW26 · New Season</span>
+      <div class="hero-statbar">
+        <div class="st"><b>12K+</b><span>Orders Shipped</span></div>
+        <div class="st"><b>4.9★</b><span>2,400+ Reviews</span></div>
+        <div class="st"><b>60+</b><span>Styles</span></div>
+        <div class="st"><b>100%</b><span>Authentic</span></div>
       </div>
     </div>
   </section>
@@ -181,9 +193,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=98"></script>
-<script src="js/site.js?v=98"></script>
-<script src="js/shop.js?v=98"></script>
+<script src="js/data.js?v=100"></script>
+<script src="js/site.js?v=100"></script>
+<script src="js/shop.js?v=100"></script>
 <script>
   mountChrome("home");
 
@@ -191,7 +203,7 @@
   document.getElementById("trustRow").innerHTML=`
     <div class="cell">${ICON.truck}<b>Free Shipping</b><span>On US orders $150+</span></div>
     <div class="cell">${ICON.refresh}<b>30-Day Returns</b><span>Easy & hassle-free</span></div>
-    <div class="cell">${ICON.lock}<b>Secure Checkout</b><span>SSL encrypted</span></div>
+    <div class="cell">${ICON.lock}<b>Secure Checkout</b><span>Encrypted &amp; protected</span></div>
     <div class="cell">${ICON.check}<b>Designed in LA</b><span>100% authentic</span></div>`;
 
   // collections
@@ -206,7 +218,7 @@
   };
   document.getElementById("colGrid").innerHTML=cats.map(([c,sub])=>`
     <a class="col-tile" href="shop.html?cat=${encodeURIComponent(c)}">
-      <div class="ph" style="background-image:url('${tileImg[c]||phSvg(sub,c,{bg:CAT_BG[c]||'#17150f'})}');background-size:cover;background-position:center"></div>
+      <div class="ph" style="background-image:url('${tileImg[c]||phSvg(sub,c,{bg:CAT_BG[c]||'#17150f'})}');background-size:cover;background-position:center top"></div>
       <div class="cap"><span>${sub}</span><h3>${c}</h3></div>
     </a>`).join("");
 

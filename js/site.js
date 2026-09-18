@@ -53,11 +53,12 @@ function updateCartCount(){
 /* ---------- Announcement bar ---------- */
 function announceHTML(){
   const items=[
-    "<b>Free Shipping</b> on all US orders $150+",
-    "<b>New Drop</b> — FW26 Collection Live Now",
-    "100% Authentic · Designed in Los Angeles",
-    "<b>30-Day</b> Easy Returns",
-    "Secure SSL Checkout"
+    "<b>Free US Shipping</b> on Orders Over $150",
+    "<b>FW26 Collection</b> — Now Live",
+    "Designed in Los Angeles · Shipped Worldwide",
+    "<b>30-Day</b> Easy Returns &amp; Exchanges",
+    "Heavyweight Fabrics · Made to Last",
+    "Join <b>@reservedhollywood</b> for Early Drops"
   ];
   const line=items.map(t=>`<span>${t}</span>`).join("");
   return `<div class="announce"><div class="track">${line}${line}</div></div>`;
@@ -208,10 +209,9 @@ function footerHTML(){
         <span class="pb">AMEX</span>
         <span class="pb">DISCOVER</span>
         <span class="pb">APPLE&nbsp;PAY</span>
-        <span class="pb">SHOP&nbsp;PAY</span>
-        <span class="pb ssl">🛡 SSL SECURED</span>
+        <span class="pb ssl">🛡 SECURE CHECKOUT</span>
       </div>
-      <div class="secure-note">${ICON.lock} Secure Checkout · SSL Encrypted · All prices in USD</div>
+      <div class="secure-note">${ICON.lock} Secure Encrypted Checkout · All prices in USD</div>
     </div>
 
     <div class="wrap nf-bottom">
@@ -270,7 +270,7 @@ function renderCart(){
     <div class="subrow"><span>Subtotal</span><span>${fmt(sub)}</span></div>
     <div class="ship-note">${remaining>0?`Add <b>${fmt(remaining)}</b> for free shipping`:"🎉 You've unlocked free shipping!"}</div>
     <button class="btn block" onclick="checkout()">Checkout · ${fmt(sub)}</button>
-    <div class="secure">${'🔒'} Secure SSL checkout — Visa · Mastercard · Amex · Apple Pay</div>`;
+    <div class="secure">${'🔒'} Secure checkout — Visa · Mastercard · Amex · Apple Pay</div>`;
   updateCartCount();
 }
 
