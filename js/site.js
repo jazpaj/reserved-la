@@ -106,7 +106,6 @@ function headerHTML(active){
         ${link('shop.html?cat=Bottoms','Bottoms','')}
         ${link('shop.html?cat=Hoodies','Hoodies','')}
         ${link('shop.html?cat=Headwear','Headwear','')}
-        ${link('shop.html?sort=new','New Arrivals','new')}
       </nav>
       <div class="hd-icons">
         <button class="icon-btn" aria-label="Search" onclick="location.href='shop.html'">${ICON.search}</button>
@@ -128,7 +127,6 @@ function headerHTML(active){
       <a href="shop.html?cat=Bottoms">Bottoms</a>
       <a href="shop.html?cat=Hoodies">Hoodies</a>
       <a href="shop.html?cat=Headwear">Headwear</a>
-      <a href="shop.html?sort=new">New Arrivals</a>
       <a href="about.html">About</a>
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
@@ -179,7 +177,6 @@ function footerHTML(){
           <a href="shop.html?cat=Jackets">Jackets</a>
           <a href="shop.html?cat=Bottoms">Bottoms</a>
           <a href="shop.html?cat=Headwear">Headwear</a>
-          <a href="shop.html?sort=new">New Arrivals</a>
         </div>
 
         <div class="foot-col">
@@ -200,18 +197,6 @@ function footerHTML(){
           <a href="shipping-policy.html">Fulfillment Policy</a>
         </div>
       </div>
-    </div>
-
-    <div class="wrap nf-pay">
-      <div class="pay-badges">
-        <span class="pb">VISA</span>
-        <span class="pb">MASTERCARD</span>
-        <span class="pb">AMEX</span>
-        <span class="pb">DISCOVER</span>
-        <span class="pb">APPLE&nbsp;PAY</span>
-        <span class="pb ssl">🛡 SECURE CHECKOUT</span>
-      </div>
-      <div class="secure-note">${ICON.lock} Secure Encrypted Checkout · All prices in USD</div>
     </div>
 
     <div class="wrap nf-bottom">
