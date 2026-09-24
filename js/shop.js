@@ -47,10 +47,13 @@ function featured(n){
 /* ---- Shop page ---- */
 const CATS=["All","Shorts","Denim","Jackets","Bottoms","Hoodies","Headwear"];
 
+const PER_PAGE=12;
+
 function initShop(){
   const params=new URLSearchParams(location.search);
   let activeCat=params.get("cat")||"All";
   let sort=params.get("sort")||"featured";
+  let page=parseInt(params.get("page"),10)||1;
   if(!CATS.includes(activeCat)) activeCat="All";
 
   const chipWrap=document.getElementById("filters");
@@ -58,29 +61,60 @@ function initShop(){
   const grid=document.getElementById("shopGrid");
   const countNote=document.getElementById("countNote");
   const title=document.getElementById("shopTitle");
+  const pager=document.getElementById("pager");
 
   chipWrap.innerHTML=CATS.map(c=>`<button class="chip ${c===activeCat?'active':''}" data-cat="${c}">${c==="All"?"All Products":c}</button>`).join("");
   if(sortSel) sortSel.value=sort;
 
-  function apply(){
+  function pagerHTML(cur,total){
+    if(total<=1) return "";
+    let out=`<button class="pg-btn" data-pg="${cur-1}" ${cur===1?'disabled':''} aria-label="Previous page">‹</button>`;
+    for(let i=1;i<=total;i++){
+      out+=`<button class="pg-btn ${i===cur?'active':''}" data-pg="${i}" aria-label="Page ${i}"${i===cur?' aria-current="page"':''}>${i}</button>`;
+    }
+    out+=`<button class="pg-btn" data-pg="${cur+1}" ${cur===total?'disabled':''} aria-label="Next page">›</button>`;
+    return out;
+  }
+
+  function apply(resetPage){
     let list=activeCat==="All"?PRODUCTS.slice():PRODUCTS.filter(p=>p.cat===activeCat);
     if(sort==="price-asc") list.sort((a,b)=>a.price-b.price);
     else if(sort==="price-desc") list.sort((a,b)=>b.price-a.price);
     else if(sort==="new") list.sort((a,b)=>(b.tag==="NEW")-(a.tag==="NEW"));
     else if(sort==="rating") list.sort((a,b)=>b.rating-a.rating);
-    renderGrid("shopGrid",list);
-    countNote.textContent=list.length+" product"+(list.length!==1?"s":"");
+
+    const totalPages=Math.max(1,Math.ceil(list.length/PER_PAGE));
+    if(resetPage) page=1;
+    if(page>totalPages) page=totalPages;
+    if(page<1) page=1;
+    const start=(page-1)*PER_PAGE;
+    const pageItems=list.slice(start,start+PER_PAGE);
+
+    renderGrid("shopGrid",pageItems);
+    const shown=pageItems.length, from=list.length?start+1:0, to=start+shown;
+    countNote.textContent=list.length
+      ? `${from}–${to} of ${list.length} product${list.length!==1?"s":""}`
+      : "0 products";
     title.textContent=activeCat==="All"?"Shop All":activeCat;
     chipWrap.querySelectorAll(".chip").forEach(ch=>ch.classList.toggle("active",ch.dataset.cat===activeCat));
+    if(pager) pager.innerHTML=pagerHTML(page,totalPages);
+
     const u=new URL(location);
     u.searchParams.set("cat",activeCat);
     if(sort!=="featured") u.searchParams.set("sort",sort); else u.searchParams.delete("sort");
+    if(page>1) u.searchParams.set("page",page); else u.searchParams.delete("page");
     history.replaceState({},"",u);
     if(typeof syncHeaderNav==="function") syncHeaderNav();
   }
-  chipWrap.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b)return; activeCat=b.dataset.cat; apply(); });
-  if(sortSel) sortSel.addEventListener("change",e=>{ sort=e.target.value; apply(); });
-  apply();
+
+  chipWrap.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b)return; activeCat=b.dataset.cat; apply(true); });
+  if(sortSel) sortSel.addEventListener("change",e=>{ sort=e.target.value; apply(true); });
+  if(pager) pager.addEventListener("click",e=>{
+    const b=e.target.closest(".pg-btn"); if(!b||b.disabled)return;
+    page=parseInt(b.dataset.pg,10)||1; apply(false);
+    const top=document.getElementById("shopTitle"); if(top) top.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  apply(false);
 }
 
 /* ---- Product detail page ---- */

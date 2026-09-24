@@ -690,6 +690,15 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
   .promo-body{padding:28px 24px 26px}
 }
 
+/* ---------- Pagination ---------- */
+.pager{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0 64px}
+.pager:empty{padding:0}
+.pg-btn{min-width:42px;height:42px;padding:0 12px;border:1.5px solid var(--line);background:#fff;border-radius:3px;
+  font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
+.pg-btn:hover:not(:disabled):not(.active){border-color:var(--ink)}
+.pg-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pg-btn:disabled{opacity:.35;cursor:not-allowed}
+
 /* ---------- Misc ---------- */
 .placeholder-note{background:#fff6d6;border:1px solid #e6d48a;color:#7a5f00;font-size:12.5px;
   padding:6px 12px;border-radius:3px;display:inline-block}
