@@ -285,6 +285,71 @@ function toast(msg){
 /* ---------- Newsletter ---------- */
 function newsSignup(e){ e.preventDefault(); e.target.reset(); toast("You're on the list. Welcome to Reserved LA."); return false; }
 
+/* ---------- Promo / newsletter pop-up ---------- */
+function promoModalHTML(){
+  return `
+  <div class="promo-ov" id="promoOv" onclick="if(event.target===this)closePromo()">
+    <div class="promo-modal" role="dialog" aria-modal="true" aria-label="Get 10% off your first order">
+      <button class="promo-x" aria-label="Close" onclick="closePromo()">&times;</button>
+      <div class="promo-media" style="background-image:url('assets/hero-bg.jpg')"><span class="promo-tag">FW26 · New Season</span></div>
+      <div class="promo-body">
+        <div id="promoForm">
+          <div class="promo-eyebrow">Reserved LA · Members</div>
+          <h3>TAKE 10% OFF<br>YOUR FIRST ORDER</h3>
+          <p class="promo-sub">Join the list for early access to new drops, restock alerts and members-only offers — starting with <b>10% off</b> today.</p>
+          <form onsubmit="return promoSubmit(event)" novalidate>
+            <input type="email" required placeholder="Enter your email address" aria-label="Email address">
+            <button class="btn block" type="submit">Unlock My 10% Off</button>
+          </form>
+          <button class="promo-no" onclick="closePromo()">No thanks, I'll pay full price</button>
+          <p class="promo-fine">By subscribing you agree to receive marketing emails from Reserved LA. Unsubscribe anytime. See our <a href="privacy-policy.html">Privacy Policy</a>.</p>
+        </div>
+        <div id="promoSuccess" hidden>
+          <div class="promo-eyebrow">You're on the list</div>
+          <h3>WELCOME<br>TO RESERVED LA</h3>
+          <p class="promo-sub">Here's <b>10% off</b> your first order — enter this code at checkout:</p>
+          <div class="promo-code"><span id="promoCode">RESERVED10</span><button type="button" onclick="copyPromo()">Copy</button></div>
+          <a class="btn block" href="shop.html" onclick="closePromo()">Start Shopping</a>
+          <p class="promo-fine">We've saved it to this device, and it's waiting in the promo box at checkout.</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function openPromo(){
+  if(localStorage.getItem("rl_promo_seen")) return;
+  if(document.getElementById("promoOv")) return;
+  const d=document.createElement("div"); d.innerHTML=promoModalHTML();
+  document.body.appendChild(d.firstElementChild);
+  requestAnimationFrame(()=>{ const o=document.getElementById("promoOv"); if(o){o.classList.add("show"); document.body.style.overflow="hidden";} });
+}
+function closePromo(){
+  try{localStorage.setItem("rl_promo_seen","1")}catch(e){}
+  const o=document.getElementById("promoOv");
+  if(o){ o.classList.remove("show"); document.body.style.overflow=""; setTimeout(()=>o.remove(),300); }
+}
+function promoSubmit(e){
+  e.preventDefault();
+  const email=e.target.querySelector("input");
+  if(!email.value || !email.value.includes("@")){ email.focus(); toast("Please enter a valid email."); return false; }
+  try{localStorage.setItem("rl_promo_seen","1")}catch(err){}
+  document.getElementById("promoForm").hidden=true;
+  document.getElementById("promoSuccess").hidden=false;
+  toast("You're in — 10% off unlocked.");
+  return false;
+}
+function copyPromo(){
+  const code=(document.getElementById("promoCode")||{}).textContent||"RESERVED10";
+  try{ navigator.clipboard.writeText(code); toast("Code copied — "+code); }
+  catch(e){ toast("Your code is "+code); }
+}
+function schedulePromo(){
+  if(localStorage.getItem("rl_promo_seen")) return;
+  // Wait until the cookie banner has been handled so we never stack two overlays.
+  if(localStorage.getItem("rl_cookie_ok")) setTimeout(openPromo,3200);
+  else window._promoPending=true;
+}
+
 /* ---------- Cookie consent ---------- */
 function cookieBanner(){
   if(localStorage.getItem("rl_cookie_ok")) return;
@@ -302,6 +367,7 @@ function cookieBanner(){
 function cookieChoice(ok){
   try{localStorage.setItem("rl_cookie_ok",ok?"all":"essential")}catch(e){}
   if(window._ck){ window._ck.classList.remove("show"); setTimeout(()=>window._ck.remove(),400); }
+  if(window._promoPending){ window._promoPending=false; setTimeout(openPromo,1400); }
 }
 
 /* ---------- Boot ---------- */
@@ -312,6 +378,6 @@ function mountChrome(activeKey){
   // cart drawer appended to body
   const cd=document.createElement("div"); cd.innerHTML=cartDrawerHTML(); document.body.appendChild(cd.firstElementChild);
   const y=document.getElementById("yr"); if(y) y.textContent=new Date().getFullYear();
-  renderCart(); updateCartCount(); cookieBanner();
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){closeCart();closeMenu();} });
+  renderCart(); updateCartCount(); cookieBanner(); schedulePromo();
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){closeCart();closeMenu();closePromo();} });
 }
