@@ -391,7 +391,7 @@ section.wrap{padding-top:64px;padding-bottom:64px}
 .nf-news form .btn{border-radius:100px}
 
 /* mega wordmark */
-.nf-mark{padding:22px 24px 6px;text-align:center;line-height:1;overflow:hidden}
+.nf-mark{padding:26px 24px;text-align:center;line-height:.72;overflow:hidden}
 .nf-mark span{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.14em;
   font-size:clamp(22px,4vw,40px);color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.3);
   white-space:nowrap;display:inline-block}
