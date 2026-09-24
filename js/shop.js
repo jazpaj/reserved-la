@@ -53,11 +53,15 @@ function initShop(){
   const params=new URLSearchParams(location.search);
   let activeCat=params.get("cat")||"All";
   let sort=params.get("sort")||"featured";
+  let gender=params.get("gender")||"All";
   let page=parseInt(params.get("page"),10)||1;
   if(!CATS.includes(activeCat)) activeCat="All";
+  const GENDERS=["All","Womens","Mens","Unisex"];
+  if(!GENDERS.includes(gender)) gender="All";
 
   const chipWrap=document.getElementById("filters");
   const sortSel=document.getElementById("sortSelect");
+  const genderSel=document.getElementById("genderSelect");
   const grid=document.getElementById("shopGrid");
   const countNote=document.getElementById("countNote");
   const title=document.getElementById("shopTitle");
@@ -65,6 +69,7 @@ function initShop(){
 
   chipWrap.innerHTML=CATS.map(c=>`<button class="chip ${c===activeCat?'active':''}" data-cat="${c}">${c==="All"?"All Products":c}</button>`).join("");
   if(sortSel) sortSel.value=sort;
+  if(genderSel) genderSel.value=gender;
 
   function pagerHTML(cur,total){
     if(total<=1) return "";
@@ -78,6 +83,7 @@ function initShop(){
 
   function apply(resetPage){
     let list=activeCat==="All"?PRODUCTS.slice():PRODUCTS.filter(p=>p.cat===activeCat);
+    if(gender!=="All") list=list.filter(p=>p.gender===gender);
     if(sort==="price-asc") list.sort((a,b)=>a.price-b.price);
     else if(sort==="price-desc") list.sort((a,b)=>b.price-a.price);
     else if(sort==="new") list.sort((a,b)=>(b.tag==="NEW")-(a.tag==="NEW"));
@@ -95,12 +101,15 @@ function initShop(){
     countNote.textContent=list.length
       ? `${from}–${to} of ${list.length} product${list.length!==1?"s":""}`
       : "0 products";
-    title.textContent=activeCat==="All"?"Shop All":activeCat;
+    const gLabel = gender==="Womens"?"Women's":gender==="Mens"?"Men's":gender==="Unisex"?"Unisex":"";
+    const catLabel = activeCat==="All"?"Shop All":activeCat;
+    title.textContent = gender==="All" ? catLabel : (activeCat==="All" ? gLabel : gLabel+" "+activeCat);
     chipWrap.querySelectorAll(".chip").forEach(ch=>ch.classList.toggle("active",ch.dataset.cat===activeCat));
     if(pager) pager.innerHTML=pagerHTML(page,totalPages);
 
     const u=new URL(location);
     u.searchParams.set("cat",activeCat);
+    if(gender!=="All") u.searchParams.set("gender",gender); else u.searchParams.delete("gender");
     if(sort!=="featured") u.searchParams.set("sort",sort); else u.searchParams.delete("sort");
     if(page>1) u.searchParams.set("page",page); else u.searchParams.delete("page");
     history.replaceState({},"",u);
@@ -109,6 +118,7 @@ function initShop(){
 
   chipWrap.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b)return; activeCat=b.dataset.cat; apply(true); });
   if(sortSel) sortSel.addEventListener("change",e=>{ sort=e.target.value; apply(true); });
+  if(genderSel) genderSel.addEventListener("change",e=>{ gender=e.target.value; apply(true); });
   if(pager) pager.addEventListener("click",e=>{
     const b=e.target.closest(".pg-btn"); if(!b||b.disabled)return;
     page=parseInt(b.dataset.pg,10)||1; apply(false);

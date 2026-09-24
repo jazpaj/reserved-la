@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
-<link rel="stylesheet" href="styles.css?v=105">
+<link rel="stylesheet" href="styles.css?v=107">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -25,8 +25,14 @@
   <div class="wrap">
     <div class="shop-bar">
       <div class="filters" id="filters"></div>
-      <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span class="count-note" id="countNote"></span>
+        <select id="genderSelect" aria-label="Filter by gender">
+          <option value="All">All Genders</option>
+          <option value="Womens">Women's</option>
+          <option value="Mens">Men's</option>
+          <option value="Unisex">Unisex</option>
+        </select>
         <select id="sortSelect" aria-label="Sort products">
           <option value="featured">Featured</option>
           <option value="new">Newest</option>
@@ -42,9 +48,9 @@
 </main>
 
 <div id="footer-slot"></div>
-<script src="js/data.js?v=105"></script>
-<script src="js/site.js?v=105"></script>
-<script src="js/shop.js?v=105"></script>
+<script src="js/data.js?v=107"></script>
+<script src="js/site.js?v=107"></script>
+<script src="js/shop.js?v=107"></script>
 <script>mountChrome("shop"); initShop();</script>
 </body>
 </html>

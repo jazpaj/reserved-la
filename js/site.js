@@ -68,21 +68,25 @@ function announceHTML(){
 // Active nav is derived from the CURRENT URL (page + ?cat / ?sort), not a
 // hardcoded key — so category and New Arrivals links highlight correctly.
 function navHrefActive(href){
+  const sp = new URLSearchParams(location.search);
   const cur = {
     page: (location.pathname.split('/').pop() || 'index.html'),
-    cat: new URLSearchParams(location.search).get('cat'),
-    sort: new URLSearchParams(location.search).get('sort')
+    cat: sp.get('cat'),
+    sort: sp.get('sort'),
+    gender: sp.get('gender')
   };
   if(cur.cat === 'All') cur.cat = null;
+  if(cur.gender === 'All') cur.gender = null;
   const q = href.indexOf('?');
   const page = (q<0 ? href : href.slice(0,q)).split('/').pop();
   const hp = new URLSearchParams(q<0 ? '' : href.slice(q+1));
   if(page !== cur.page) return false;
   if(page !== 'shop.html') return true;
-  const hCat = hp.get('cat'), hSort = hp.get('sort');
-  if(!hCat && !hSort) return !cur.cat && !cur.sort;   // Shop All
-  if(hCat) return hCat === cur.cat;                    // a category
-  if(hSort) return hSort === cur.sort && !cur.cat;     // New Arrivals
+  const hCat = hp.get('cat'), hSort = hp.get('sort'), hGender = hp.get('gender');
+  if(hGender) return hGender === cur.gender && !cur.cat;      // Women / Men
+  if(hCat) return hCat === cur.cat;                            // a category
+  if(hSort) return hSort === cur.sort && !cur.cat;            // sort links
+  if(!hCat && !hSort) return !cur.cat && !cur.sort && !cur.gender; // Shop All
   return false;
 }
 // Re-evaluate header underlines against the live URL (used after in-page filtering)
@@ -99,6 +103,8 @@ function headerHTML(active){
       <button class="burger" aria-label="Menu" onclick="openMenu()">${ICON.menu}</button>
       <a href="index.html" class="brand" aria-label="Reserved LA home">RESERVED<span class="la">LA</span></a>
       <nav class="nav">
+        ${link('shop.html?gender=Womens','Women')}
+        ${link('shop.html?gender=Mens','Men')}
         ${link('shop.html','Shop All','shop')}
         ${link('shop.html?cat=Shorts','Shorts','')}
         ${link('shop.html?cat=Denim','Denim','')}
@@ -121,6 +127,8 @@ function headerHTML(active){
         <button class="icon-btn" onclick="closeMenu()">${ICON.close}</button>
       </div>
       <a href="shop.html">Shop All</a>
+      <a href="shop.html?gender=Womens">Women</a>
+      <a href="shop.html?gender=Mens">Men</a>
       <a href="shop.html?cat=Shorts">Shorts</a>
       <a href="shop.html?cat=Denim">Denim</a>
       <a href="shop.html?cat=Jackets">Jackets</a>
@@ -172,6 +180,8 @@ function footerHTML(){
         <div class="foot-col">
           <h4>Shop</h4>
           <a href="shop.html">Shop All</a>
+          <a href="shop.html?gender=Womens">Women's</a>
+          <a href="shop.html?gender=Mens">Men's</a>
           <a href="shop.html?cat=Shorts">Shorts</a>
           <a href="shop.html?cat=Denim">Denim</a>
           <a href="shop.html?cat=Jackets">Jackets</a>
