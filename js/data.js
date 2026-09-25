@@ -10,8 +10,8 @@ const BRAND = {
   email: "support@reservedla.com",
   phone: "[YOUR PHONE NUMBER]",            // <-- replace before launch
   phoneHref: "tel:+1",                      // <-- replace before launch
-  address1: "2930 Shawn Way",
-  address2: "Rancho Cordova, California 95670",
+  address1: "6801 Hollywood Blvd Ste 121",
+  address2: "Hollywood, CA 90028",
   country: "United States",
   hours: "Customer Service: 7 days a week, 8AM–8PM PT",
   instagram: "https://www.instagram.com/reservedhollywood/",

@@ -114,7 +114,7 @@ function headerHTML(active){
         ${link('shop.html?cat=Headwear','Headwear','')}
       </nav>
       <div class="hd-icons">
-        <button class="icon-btn" aria-label="Search" onclick="location.href='shop.html'">${ICON.search}</button>
+        <button class="icon-btn" aria-label="Search" onclick="openSearch()">${ICON.search}</button>
         <button class="icon-btn" aria-label="Bag" onclick="openCart()">${ICON.cart}<span class="cart-count">0</span></button>
       </div>
     </div>
@@ -360,6 +360,63 @@ function schedulePromo(){
   else window._promoPending=true;
 }
 
+/* ---------- Search ---------- */
+function searchOverlayHTML(){
+  return `
+  <div class="search-ov" id="searchOv" onclick="if(event.target===this)closeSearch()">
+    <div class="search-panel">
+      <form class="search-form" onsubmit="return submitSearch(event)">
+        <span class="s-ic">${ICON.search}</span>
+        <input id="searchInput" type="search" placeholder="Search for products, categories, colours…" autocomplete="off" aria-label="Search products">
+        <button type="button" class="search-x" aria-label="Close search" onclick="closeSearch()">&times;</button>
+      </form>
+      <div class="search-results" id="searchResults"><p class="s-hint">Start typing to search the collection.</p></div>
+    </div>
+  </div>`;
+}
+function openSearch(){
+  if(document.getElementById("searchOv")) return;
+  const d=document.createElement("div"); d.innerHTML=searchOverlayHTML();
+  document.body.appendChild(d.firstElementChild);
+  const ov=document.getElementById("searchOv");
+  requestAnimationFrame(()=>{ ov.classList.add("show"); document.body.style.overflow="hidden"; });
+  const inp=document.getElementById("searchInput");
+  inp.addEventListener("input", ()=>runSearch(inp.value));
+  setTimeout(()=>inp.focus(),60);
+}
+function closeSearch(){
+  const ov=document.getElementById("searchOv");
+  if(ov){ ov.classList.remove("show"); document.body.style.overflow=""; setTimeout(()=>ov.remove(),250); }
+}
+function searchMatch(q){
+  q=q.trim().toLowerCase(); if(!q) return [];
+  const terms=q.split(/\s+/);
+  return PRODUCTS.filter(p=>{
+    const hay=(p.name+" "+p.cat+" "+p.color+" "+(p.gender||"")+" "+(p.desc||"")).toLowerCase();
+    return terms.every(t=>hay.includes(t));
+  });
+}
+function runSearch(q){
+  const box=document.getElementById("searchResults"); if(!box) return;
+  q=(q||"").trim();
+  if(!q){ box.innerHTML=`<p class="s-hint">Start typing to search the collection.</p>`; return; }
+  const res=searchMatch(q);
+  if(!res.length){ box.innerHTML=`<p class="s-hint">No products found for “${q}”. Try a different term.</p>`; return; }
+  const top=res.slice(0,6).map(p=>`
+    <a class="s-res" href="product.html?id=${p.id}">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <span class="s-info"><span class="s-nm">${p.name}</span><span class="s-meta">${p.cat} · ${p.color}</span></span>
+      <span class="s-pr">${fmt(p.price)}</span>
+    </a>`).join("");
+  box.innerHTML=top+`<a class="s-all" href="shop.html?q=${encodeURIComponent(q)}">See all ${res.length} result${res.length!==1?"s":""} →</a>`;
+}
+function submitSearch(e){
+  e.preventDefault();
+  const q=(document.getElementById("searchInput").value||"").trim();
+  if(q) location.href="shop.html?q="+encodeURIComponent(q);
+  return false;
+}
+
 /* ---------- Cookie consent ---------- */
 function cookieBanner(){
   if(localStorage.getItem("rl_cookie_ok")) return;
@@ -389,5 +446,5 @@ function mountChrome(activeKey){
   const cd=document.createElement("div"); cd.innerHTML=cartDrawerHTML(); document.body.appendChild(cd.firstElementChild);
   const y=document.getElementById("yr"); if(y) y.textContent=new Date().getFullYear();
   renderCart(); updateCartCount(); cookieBanner(); schedulePromo();
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){closeCart();closeMenu();closePromo();} });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){closeCart();closeMenu();closePromo();closeSearch();} });
 }

@@ -54,6 +54,7 @@ function initShop(){
   let activeCat=params.get("cat")||"All";
   let sort=params.get("sort")||"featured";
   let gender=params.get("gender")||"All";
+  let query=(params.get("q")||"").trim();
   let page=parseInt(params.get("page"),10)||1;
   if(!CATS.includes(activeCat)) activeCat="All";
   const GENDERS=["All","Womens","Mens","Unisex"];
@@ -84,6 +85,13 @@ function initShop(){
   function apply(resetPage){
     let list=activeCat==="All"?PRODUCTS.slice():PRODUCTS.filter(p=>p.cat===activeCat);
     if(gender!=="All") list=list.filter(p=>p.gender===gender);
+    if(query){
+      const terms=query.toLowerCase().split(/\s+/);
+      list=list.filter(p=>{
+        const hay=(p.name+" "+p.cat+" "+p.color+" "+(p.gender||"")+" "+(p.desc||"")).toLowerCase();
+        return terms.every(t=>hay.includes(t));
+      });
+    }
     if(sort==="price-asc") list.sort((a,b)=>a.price-b.price);
     else if(sort==="price-desc") list.sort((a,b)=>b.price-a.price);
     else if(sort==="new") list.sort((a,b)=>(b.tag==="NEW")-(a.tag==="NEW"));
@@ -103,12 +111,14 @@ function initShop(){
       : "0 products";
     const gLabel = gender==="Womens"?"Women's":gender==="Mens"?"Men's":gender==="Unisex"?"Unisex":"";
     const catLabel = activeCat==="All"?"Shop All":activeCat;
-    title.textContent = gender==="All" ? catLabel : (activeCat==="All" ? gLabel : gLabel+" "+activeCat);
+    if(query){ title.textContent = `Search: “${query}”`; }
+    else title.textContent = gender==="All" ? catLabel : (activeCat==="All" ? gLabel : gLabel+" "+activeCat);
     chipWrap.querySelectorAll(".chip").forEach(ch=>ch.classList.toggle("active",ch.dataset.cat===activeCat));
     if(pager) pager.innerHTML=pagerHTML(page,totalPages);
 
     const u=new URL(location);
     u.searchParams.set("cat",activeCat);
+    if(query) u.searchParams.set("q",query); else u.searchParams.delete("q");
     if(gender!=="All") u.searchParams.set("gender",gender); else u.searchParams.delete("gender");
     if(sort!=="featured") u.searchParams.set("sort",sort); else u.searchParams.delete("sort");
     if(page>1) u.searchParams.set("page",page); else u.searchParams.delete("page");
