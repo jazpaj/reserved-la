@@ -8,8 +8,8 @@ const BRAND = {
   dba: "Reserved LA is a DBA of ZA Distribution LLC",
   ein: "88-1123884",
   email: "support@reservedla.com",
-  phone: "[YOUR PHONE NUMBER]",            // <-- replace before launch
-  phoneHref: "tel:+1",                      // <-- replace before launch
+  phone: "310-634-0792",
+  phoneHref: "tel:+13106340792",
   address1: "6801 Hollywood Blvd Ste 121",
   address2: "Hollywood, CA 90028",
   country: "United States",
