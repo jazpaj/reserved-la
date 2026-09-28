@@ -178,18 +178,6 @@ function footerHTML(){
 
       <div class="nf-links">
         <div class="foot-col">
-          <h4>Shop</h4>
-          <a href="shop.html">Shop All</a>
-          <a href="shop.html?gender=Womens">Women's</a>
-          <a href="shop.html?gender=Mens">Men's</a>
-          <a href="shop.html?cat=Shorts">Shorts</a>
-          <a href="shop.html?cat=Denim">Denim</a>
-          <a href="shop.html?cat=Jackets">Jackets</a>
-          <a href="shop.html?cat=Bottoms">Bottoms</a>
-          <a href="shop.html?cat=Headwear">Headwear</a>
-        </div>
-
-        <div class="foot-col">
           <h4>Help</h4>
           <a href="contact.html">Contact Us</a>
           <a href="faq.html">FAQ</a>

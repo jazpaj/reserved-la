@@ -406,7 +406,7 @@ section.wrap{padding-top:64px;padding-bottom:64px}
 .nf-contact .legal b{color:#e7e3da;font-weight:600}
 .nf-contact .legal a{color:#a7a29a}
 .nf-contact .legal a:hover{color:#fff}
-.nf-links{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.nf-links{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
 
 /* utility bar */
 .nf-pay{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
