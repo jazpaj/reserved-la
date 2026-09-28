@@ -5,7 +5,7 @@
 const BRAND = {
   name: "RESERVED LA",
   legalName: "ZA Distribution LLC",
-  dba: "Reserved LA is a DBA of ZA Distribution LLC",
+  dba: "Reserved LA — ZA Distribution LLC",
   ein: "88-1123884",
   email: "support@reservedla.com",
   phone: "310-634-0792",
