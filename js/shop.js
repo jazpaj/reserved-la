@@ -4,8 +4,10 @@
    ========================================================= */
 
 function stars(rating,reviews){
-  const full=Math.round(rating);
-  return `<span class="stars">${"★".repeat(full)}${"☆".repeat(5-full)}<span class="rc">${rating} (${reviews})</span></span>`;
+  const r=Math.max(0,Math.min(5,Number(rating)||0));
+  const pct=(r/5)*100;
+  const rc=(reviews!=null)?`<span class="rc">${rating} (${reviews})</span>`:"";
+  return `<span class="stars"><span class="star-graphic" title="${r} out of 5" aria-label="${r} out of 5 stars"><span class="sg-empty">★★★★★</span><span class="sg-fill" style="width:${pct}%">★★★★★</span></span>${rc}</span>`;
 }
 
 function cardHTML(p){

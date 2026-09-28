@@ -29,7 +29,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
-<link rel="stylesheet" href="styles.css?v=112">
+<link rel="stylesheet" href="styles.css?v=113">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -184,9 +184,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=112"></script>
-<script src="js/site.js?v=112"></script>
-<script src="js/shop.js?v=112"></script>
+<script src="js/data.js?v=113"></script>
+<script src="js/site.js?v=113"></script>
+<script src="js/shop.js?v=113"></script>
 <script>
   mountChrome("home");
 
@@ -244,13 +244,13 @@
     {n:"Noah P.", r:5, when:"4 days ago", pid:"rl-nylon-ma1-bomber", prod:"Nylon MA-1 Bomber", fit:"True to size", title:"Perfect weight bomber", body:"The nylon feels premium and the fit is spot on — warm without being bulky. Shipping was quick too.", help:19},
     {n:"Camila V.", r:4, when:"1 week ago", pid:"rl-fisherman-beanie", prod:"Fisherman Beanie", fit:"One size", title:"Great beanie, runs snug", body:"Really soft knit and holds its shape. Sits a touch snug at first but loosens up nicely. Would buy again.", help:11}
   ];
-  const starRow = n => "★".repeat(n)+"☆".repeat(5-n);
+  const starRow = n => { const pct=(Math.max(0,Math.min(5,Number(n)||0))/5)*100; return `<span class="star-graphic"><span class="sg-empty">★★★★★</span><span class="sg-fill" style="width:${pct}%">★★★★★</span></span>`; };
   const initials = nm => nm.split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase();
 
   document.getElementById("revSummary").innerHTML = `
     <div class="rev-score">
       <div class="big">4.9</div>
-      <div class="stars">★★★★★</div>
+      <div class="stars">${starRow(4.9)}</div>
       <div class="count">Based on ${REV_TOTAL.toLocaleString()} reviews</div>
     </div>
     <div class="rev-bars">

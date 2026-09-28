@@ -252,6 +252,9 @@ section.wrap{padding-top:64px;padding-bottom:64px}
 .card .price .now.sale{color:var(--sale)}
 .stars{color:#111;font-size:12px;letter-spacing:1px}
 .stars .rc{color:var(--muted);font-size:11px;margin-left:5px;letter-spacing:0}
+.star-graphic{position:relative;display:inline-block;white-space:nowrap;vertical-align:middle}
+.star-graphic .sg-empty{color:#d5d5d5}
+.star-graphic .sg-fill{position:absolute;top:0;left:0;width:0;overflow:hidden;color:inherit}
 
 /* ---------- Editorial / lookbook ---------- */
 .editorial{background:var(--ink);color:#fff}
