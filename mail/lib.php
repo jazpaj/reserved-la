@@ -83,6 +83,31 @@ function rl_resend_send(array $opts) {
     return ['ok' => false, 'status' => $status, 'id' => null, 'error' => $d['message'] ?? $d['error'] ?? ('HTTP ' . $status)];
 }
 
+/* ---------- Order confirmation (shared by both endpoints) ------------- */
+
+/**
+ * Render + send the order-confirmation email.
+ * Expects $data['customer_email']; derives item_count if missing.
+ * @return array result from rl_resend_send() plus 'subject'
+ */
+function rl_send_order_confirmation(array $data) {
+    if (empty($data['customer_email']) || !filter_var($data['customer_email'], FILTER_VALIDATE_EMAIL)) {
+        return ['ok' => false, 'status' => 422, 'id' => null, 'error' => 'A valid customer_email is required.'];
+    }
+    if (empty($data['item_count']) && !empty($data['items']) && is_array($data['items'])) {
+        $data['item_count'] = count($data['items']);
+    }
+    $subject = 'Your Reserved LA order ' . ($data['order_number'] ?? '') . ' is confirmed';
+    try {
+        $html = rl_render_file('order-confirmation.html', $data);
+    } catch (Throwable $e) {
+        return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'Template error: ' . $e->getMessage()];
+    }
+    $res = rl_resend_send(['to' => $data['customer_email'], 'subject' => $subject, 'html' => $html]);
+    $res['subject'] = $subject;
+    return $res;
+}
+
 /* ---------- Sample data (for the test send) -------------------------- */
 
 function rl_sample_order() {

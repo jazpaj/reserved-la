@@ -68,12 +68,27 @@ curl -X POST https://reservedla.com/mail/send-order-confirmation.php \
 
 Returns `{"ok":true,"id":"..."}` on success.
 
-## Triggering it automatically
+## It's wired to checkout
 
-The site's checkout is currently a front-end demo (no payment processor / order
-storage), so nothing calls this yet. To fire it when a customer checks out, the
-checkout needs to POST the order data to this endpoint **server-side**. Ask and
-this can be wired up once a real order/payment step exists.
+`checkout.html` now sends the confirmation automatically. When a customer
+completes the demo checkout, `confirmOrder()` builds the order payload from the
+cart and POSTs it to **`mail/place-order.php`**, which sends the email via Resend.
+
+- `place-order.php` is the **browser-facing** handler. It holds no secret in the
+  page: it calls the Resend logic server-side using your `config.php` key.
+- It only accepts **same-origin** POSTs (Origin/Referer must be one of your own
+  hosts) and only emails the address on the order — so it can't be used as an
+  open relay from other sites.
+- No card number or CVC is ever sent — only the last 4 digits, as
+  `Card ending 1234`.
+
+Once you upload `mail/` (with a real `config.php`) to GoDaddy, checkout emails go
+out on their own. `send-order-confirmation.php` remains available for
+server-to-server / manual sends (token-gated).
+
+> Security caveat: Origin/Referer can be spoofed by non-browser clients, so this
+> stops casual abuse but is not bulletproof. For full protection, verify the
+> order against a real payment/order record once a processor is connected.
 
 ## Security notes
 - The endpoint refuses any request without the correct `SEND_TOKEN` (returns 403),

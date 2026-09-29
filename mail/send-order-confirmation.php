@@ -57,7 +57,7 @@ $isTest = isset($_GET['test']) && $_GET['test'] === '1';
 
 if ($isTest) {
     $data = rl_sample_order();
-    $to   = $cfg['TEST_RECIPIENT'];
+    $data['customer_email'] = $cfg['TEST_RECIPIENT'];   // send the sample to the test inbox
 } else {
     // Accept a JSON body, or a normal form POST.
     $raw  = file_get_contents('php://input');
@@ -77,29 +77,16 @@ if ($isTest) {
         echo json_encode(['ok' => false, 'error' => 'A valid customer_email is required.']);
         exit;
     }
-    if (empty($data['item_count']) && !empty($data['items']) && is_array($data['items'])) {
-        $data['item_count'] = count($data['items']);
-    }
-    $to = $data['customer_email'];
 }
 
 /* --- render + send --------------------------------------------------- */
-$subject = 'Your Reserved LA order ' . ($data['order_number'] ?? '') . ' is confirmed';
-try {
-    $html = rl_render_file('order-confirmation.html', $data);
-} catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'error' => 'Template error: ' . $e->getMessage()]);
-    exit;
-}
+$res = rl_send_order_confirmation($data);
 
-$res = rl_resend_send(['to' => $to, 'subject' => $subject, 'html' => $html]);
-
-if (!$res['ok']) http_response_code(502);
+if (!$res['ok']) http_response_code($res['status'] && $res['status'] >= 400 ? $res['status'] : 502);
 echo json_encode([
     'ok'      => $res['ok'],
     'id'      => $res['id'] ?? null,
     'error'   => $res['error'] ?? null,
-    'to'      => $to,
-    'subject' => $subject,
+    'to'      => $data['customer_email'],
+    'subject' => $res['subject'] ?? null,
 ]);

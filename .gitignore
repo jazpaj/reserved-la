@@ -11,3 +11,6 @@ node_modules/
 
 # Email system secret
 mail/config.php
+
+# Build/upload artifacts
+*.zip
