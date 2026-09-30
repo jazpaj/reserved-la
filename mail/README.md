@@ -13,7 +13,7 @@ mail/
   lib/PHPMailer/                ← vendored PHPMailer (do not edit)
   config.sample.php             ← copy to config.php and fill in
   templates/order-confirmation.html
-  .htaccess                     ← hides config.php / lib.php / lib/ / templates/
+  index.html (blank)            ← in each folder, prevents directory listing
 ```
 
 ## One-time setup
@@ -70,7 +70,10 @@ email in your inbox. `{"ok":false,"error":"..."}` shows what to fix.
 > against a real payment/order record once a processor is connected.
 
 ## Notes
-- `config.php` is blocked from the web by `.htaccess` and is git-ignored.
+- `config.php` is safe from the web because the server *executes* PHP (fetching
+  it runs the file and outputs nothing — the password is never sent as text). It
+  is also git-ignored. Blank `index.html` files stop directory listing.
+  (We intentionally ship no `.htaccess` — some shared hosts 500 on its directives.)
 - The demo checkout has no tax engine, so the email shows `Tax $0.00`; a promo
   discount isn't itemized in the email. Ask if you want those added.
 - PHPMailer is bundled so you don't need Composer on the host.

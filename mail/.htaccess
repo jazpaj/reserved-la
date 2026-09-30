@@ -1,7 +1,0 @@
-# Reserved LA mail — hide secrets & includes, no directory listing
-Options -Indexes
-<FilesMatch "^(config\.php|config\.sample\.php|lib\.php)$">
-  <IfModule mod_authz_core.c>Require all denied</IfModule>
-  <IfModule !mod_authz_core.c>Order allow,deny
-Deny from all</IfModule>
-</FilesMatch>
