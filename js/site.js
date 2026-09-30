@@ -181,7 +181,6 @@ function footerHTML(){
           <h4>Help</h4>
           <a href="contact.html">Contact Us</a>
           <a href="faq.html">FAQ</a>
-          <a href="shipping-policy.html">Shipping &amp; Fulfillment</a>
           <a href="about.html">About Us</a>
           <a href="track-order.html">Track Your Order</a>
         </div>
