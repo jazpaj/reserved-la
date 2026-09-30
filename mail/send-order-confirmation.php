@@ -14,10 +14,15 @@
 ini_set('display_errors', '0');
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
+header('Content-Type: application/json; charset=utf-8');
+
+if (!is_file(__DIR__ . '/config.php')) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'config.php is missing. In mail/, copy config.sample.php to config.php and fill it in.']);
+    exit;
+}
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/lib.php';
-
-header('Content-Type: application/json; charset=utf-8');
 
 $cfg = rl_config();
 
