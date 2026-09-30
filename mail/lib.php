@@ -1,9 +1,15 @@
 <?php
 /**
- * Reserved LA — minimal helpers: template rendering + Resend (HTTPS) sending.
- * Resend is used because GoDaddy shared hosting blocks outbound SMTP ports,
- * but allows outbound HTTPS (port 443), which the Resend API uses.
+ * Reserved LA — minimal helpers: template rendering + SMTP sending (via PHPMailer).
  */
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
+
+require_once __DIR__ . '/lib/PHPMailer/Exception.php';
+require_once __DIR__ . '/lib/PHPMailer/PHPMailer.php';
+require_once __DIR__ . '/lib/PHPMailer/SMTP.php';
 
 /* ---------- Template rendering --------------------------------------- */
 /* Supports {{variable}} and {{#each list}} ... {{/each}}. Values HTML-escaped. */
@@ -37,49 +43,45 @@ function rl_render_file($name, array $data) {
     return rl_render(file_get_contents($path), $data);
 }
 
-/* ---------- Resend (HTTPS API) -------------------------------------- */
+/* ---------- SMTP send (Microsoft 365 / Outlook) --------------------- */
 
-function rl_send_resend(array $opts) {
+function rl_send_smtp(array $opts) {
     $cfg = rl_config();
-    $key = $cfg['RESEND_API_KEY'] ?? '';
-    if ($key === '' || strpos($key, 'YOUR_') === 0) {
-        return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'Resend API key not set in config.php'];
+    if (empty($cfg['SMTP_PASS']) || strpos((string)$cfg['SMTP_PASS'], 'YOUR_') === 0) {
+        return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'SMTP password not set in config.php'];
     }
-    $payload = [
-        'from'    => $opts['from'] ?? $cfg['FROM'],
-        'to'      => is_array($opts['to']) ? $opts['to'] : [$opts['to']],
-        'subject' => $opts['subject'] ?? '',
-        'html'    => $opts['html'] ?? '',
-    ];
-    if (!empty($cfg['REPLY_TO'])) $payload['reply_to'] = $cfg['REPLY_TO'];
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host       = $cfg['SMTP_HOST'];
+        $mail->Port       = (int)$cfg['SMTP_PORT'];
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $cfg['SMTP_USER'];
+        $mail->Password   = $cfg['SMTP_PASS'];
+        $mail->SMTPSecure = ($cfg['SMTP_SECURE'] === 'ssl')
+            ? PHPMailer::ENCRYPTION_SMTPS
+            : PHPMailer::ENCRYPTION_STARTTLS;
+        if (!empty($cfg['SMTP_DEBUG'])) { $mail->SMTPDebug = SMTP::DEBUG_SERVER; $mail->Debugoutput = 'error_log'; }
+        $mail->CharSet = PHPMailer::CHARSET_UTF8;
+        $mail->Timeout = 20;
 
-    $json = json_encode($payload);
-    $url  = 'https://api.resend.com/emails';
+        $mail->setFrom($cfg['FROM_EMAIL'], $cfg['FROM_NAME'] ?? 'Reserved LA');
+        if (!empty($cfg['REPLY_TO'])) $mail->addReplyTo($cfg['REPLY_TO']);
+        $to = is_array($opts['to']) ? $opts['to'] : [$opts['to']];
+        foreach ($to as $addr) $mail->addAddress($addr);
 
-    if (function_exists('curl_init')) {
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => $json,
-            CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $key, 'Content-Type: application/json'],
-            CURLOPT_TIMEOUT => 20,
-        ]);
-        $body = curl_exec($ch); $status = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch); curl_close($ch);
-        if ($body === false) return ['ok' => false, 'status' => 0, 'id' => null, 'error' => 'cURL: ' . $err];
-    } else {
-        $ctx = stream_context_create(['http' => [
-            'method' => 'POST',
-            'header' => "Authorization: Bearer $key\r\nContent-Type: application/json\r\n",
-            'content' => $json, 'timeout' => 20, 'ignore_errors' => true,
-        ]]);
-        $body = @file_get_contents($url, false, $ctx);
-        $status = 0;
-        $hdrs = function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : ($GLOBALS['http_response_header'] ?? []);
-        if (!empty($hdrs[0]) && preg_match('/\s(\d{3})\s/', $hdrs[0], $mm)) $status = (int)$mm[1];
-        if ($body === false) return ['ok' => false, 'status' => 0, 'id' => null, 'error' => 'HTTP request failed (no cURL)'];
+        $mail->isHTML(true);
+        $mail->Subject = $opts['subject'] ?? '';
+        $mail->Body    = $opts['html'] ?? '';
+        $mail->AltBody = trim(preg_replace('/\s+/', ' ', strip_tags($opts['html'] ?? '')));
+
+        $mail->send();
+        return ['ok' => true, 'status' => 200, 'id' => $mail->getLastMessageID() ?: null, 'error' => null];
+    } catch (PHPMailerException $e) {
+        return ['ok' => false, 'status' => 502, 'id' => null, 'error' => $mail->ErrorInfo ?: $e->getMessage()];
+    } catch (\Throwable $e) {
+        return ['ok' => false, 'status' => 500, 'id' => null, 'error' => $e->getMessage()];
     }
-    $d = json_decode($body, true);
-    if ($status >= 200 && $status < 300) return ['ok' => true, 'status' => $status, 'id' => $d['id'] ?? null, 'error' => null];
-    return ['ok' => false, 'status' => $status, 'id' => null, 'error' => $d['message'] ?? $d['error'] ?? ('HTTP ' . $status)];
 }
 
 /* ---------- Order confirmation (shared by both endpoints) ------------ */
@@ -97,7 +99,7 @@ function rl_send_order_confirmation(array $data) {
     } catch (Throwable $e) {
         return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'Template error: ' . $e->getMessage()];
     }
-    $res = rl_send_resend(['to' => $data['customer_email'], 'subject' => $subject, 'html' => $html]);
+    $res = rl_send_smtp(['to' => $data['customer_email'], 'subject' => $subject, 'html' => $html]);
     $res['subject'] = $subject;
     return $res;
 }
