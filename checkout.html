@@ -183,48 +183,7 @@ mountChrome("");
 
   function confirmOrder(){
     const order = "RL-" + Math.floor(100000 + Math.random()*900000);
-    const f = document.getElementById("coForm");
-    const g = n => { const el = f && f.querySelector('[name='+n+']'); return el ? (el.value||"").trim() : ""; };
-    const email = g("email") || "your email";
-
-    // Build the order payload from the cart BEFORE clearing it, then send the
-    // confirmation email via mail/place-order.php (best-effort; UI never blocks).
-    try {
-      const t = totals();
-      const abs = u => { try { return new URL(u, location.href).href; } catch(e){ return u; } };
-      const last4 = g("cardNum").replace(/\D/g,"").slice(-4);
-      const items = getCart().map(l => {
-        const p = (typeof PRODUCTS !== "undefined") ? PRODUCTS.find(x => x.id === l.id) : null;
-        return { name:l.name, color:(p&&p.color)||"", size:l.size, quantity:l.qty,
-                 line_total: fmt(l.price*l.qty), image_url: abs(l.img) };
-      });
-      const dfmt = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
-      const payload = {
-        customer_email: g("email"),
-        customer_first_name: (g("name").split(/\s+/)[0] || ""),
-        order_number: order,
-        order_date: dfmt(new Date()),
-        payment_method: last4 ? ("Card ending " + last4) : "Card",
-        estimated_delivery: dfmt(new Date(Date.now() + 7*864e5)),
-        subtotal: fmt(t.sub),
-        shipping: t.ship === 0 ? "Free" : fmt(t.ship),
-        tax: "$0.00",
-        total: fmt(t.total),
-        shipping_name: g("name"),
-        shipping_address_line1: g("address") + (g("apt") ? (", " + g("apt")) : ""),
-        shipping_city: g("city"), shipping_state: g("state"), shipping_zip: g("zip"),
-        shipping_method: "Standard US",
-        order_url: abs("track-order.html"),
-        items: items
-      };
-      const base = location.pathname.replace(/[^/]*$/, "");
-      fetch(base + "mail/place-order.php", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(payload)
-      }).then(r => r.json()).then(d => { if (!d.ok) console.warn("Order email not sent:", d.error); })
-        .catch(err => console.warn("Order email request failed:", err));
-    } catch(e) { console.warn("Order email skipped:", e); }
-
+    const email = (document.querySelector('[name=email]')||{}).value || "your email";
     try{ localStorage.removeItem("rl_cart_v1"); }catch(e){}
     updateCartCount(); if(typeof renderCart==="function") renderCart();
     root.innerHTML = `

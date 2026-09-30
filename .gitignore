@@ -8,9 +8,3 @@ Thumbs.db
 
 # Node (in case tooling is added later)
 node_modules/
-
-# Email system secret
-mail/config.php
-
-# Build/upload artifacts
-*.zip
