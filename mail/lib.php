@@ -1,19 +1,13 @@
 <?php
 /**
- * Reserved LA — minimal helpers: template rendering + SMTP sending (via PHPMailer).
+ * Reserved LA — helpers: template rendering + Microsoft Graph (HTTPS) sending.
+ *
+ * Sends as the Outlook mailbox via the Microsoft Graph API over HTTPS (port 443),
+ * which GoDaddy allows (unlike SMTP, which GoDaddy blocks). Uses the OAuth2
+ * client-credentials flow with an Entra app registration (Mail.Send permission).
  */
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
-
-require_once __DIR__ . '/lib/PHPMailer/Exception.php';
-require_once __DIR__ . '/lib/PHPMailer/PHPMailer.php';
-require_once __DIR__ . '/lib/PHPMailer/SMTP.php';
-
 /* ---------- Template rendering --------------------------------------- */
-/* Supports {{variable}} and {{#each list}} ... {{/each}}. Values HTML-escaped. */
-
 function rl_esc($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 
 function rl_replace_vars($tpl, array $ctx, array $globals = []) {
@@ -43,45 +37,84 @@ function rl_render_file($name, array $data) {
     return rl_render(file_get_contents($path), $data);
 }
 
-/* ---------- SMTP send (Microsoft 365 / Outlook) --------------------- */
+/* ---------- small HTTPS helper (cURL w/ fallback) -------------------- */
+function rl_http_post($url, $body, array $headers) {
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => $body,
+            CURLOPT_HTTPHEADER => $headers, CURLOPT_TIMEOUT => 20,
+        ]);
+        $resp = curl_exec($ch); $status = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch);
+        if ($resp === false) return ['status' => 0, 'body' => '', 'error' => 'cURL: ' . $err];
+        return ['status' => $status, 'body' => $resp, 'error' => null];
+    }
+    $ctx = stream_context_create(['http' => [
+        'method' => 'POST', 'header' => implode("\r\n", $headers), 'content' => $body,
+        'timeout' => 20, 'ignore_errors' => true,
+    ]]);
+    $resp = @file_get_contents($url, false, $ctx);
+    $status = 0;
+    $hdrs = function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : ($GLOBALS['http_response_header'] ?? []);
+    if (!empty($hdrs[0]) && preg_match('/\s(\d{3})\s/', $hdrs[0], $m)) $status = (int)$m[1];
+    if ($resp === false) return ['status' => 0, 'body' => '', 'error' => 'HTTP request failed (no cURL)'];
+    return ['status' => $status, 'body' => $resp, 'error' => null];
+}
 
-function rl_send_smtp(array $opts) {
+/* ---------- Microsoft Graph: get token + send ----------------------- */
+
+function rl_graph_token() {
     $cfg = rl_config();
-    if (empty($cfg['SMTP_PASS']) || strpos((string)$cfg['SMTP_PASS'], 'YOUR_') === 0) {
-        return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'SMTP password not set in config.php'];
+    $secret = $cfg['CLIENT_SECRET'] ?? '';
+    if ($secret === '' || strpos($secret, 'YOUR_') === 0) {
+        return ['ok' => false, 'error' => 'Graph client secret not set in config.php'];
     }
-    $mail = new PHPMailer(true);
-    try {
-        $mail->isSMTP();
-        $mail->Host       = $cfg['SMTP_HOST'];
-        $mail->Port       = (int)$cfg['SMTP_PORT'];
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $cfg['SMTP_USER'];
-        $mail->Password   = $cfg['SMTP_PASS'];
-        $mail->SMTPSecure = ($cfg['SMTP_SECURE'] === 'ssl')
-            ? PHPMailer::ENCRYPTION_SMTPS
-            : PHPMailer::ENCRYPTION_STARTTLS;
-        if (!empty($cfg['SMTP_DEBUG'])) { $mail->SMTPDebug = SMTP::DEBUG_SERVER; $mail->Debugoutput = 'error_log'; }
-        $mail->CharSet = PHPMailer::CHARSET_UTF8;
-        $mail->Timeout = 20;
-
-        $mail->setFrom($cfg['FROM_EMAIL'], $cfg['FROM_NAME'] ?? 'Reserved LA');
-        if (!empty($cfg['REPLY_TO'])) $mail->addReplyTo($cfg['REPLY_TO']);
-        $to = is_array($opts['to']) ? $opts['to'] : [$opts['to']];
-        foreach ($to as $addr) $mail->addAddress($addr);
-
-        $mail->isHTML(true);
-        $mail->Subject = $opts['subject'] ?? '';
-        $mail->Body    = $opts['html'] ?? '';
-        $mail->AltBody = trim(preg_replace('/\s+/', ' ', strip_tags($opts['html'] ?? '')));
-
-        $mail->send();
-        return ['ok' => true, 'status' => 200, 'id' => $mail->getLastMessageID() ?: null, 'error' => null];
-    } catch (PHPMailerException $e) {
-        return ['ok' => false, 'status' => 502, 'id' => null, 'error' => $mail->ErrorInfo ?: $e->getMessage()];
-    } catch (\Throwable $e) {
-        return ['ok' => false, 'status' => 500, 'id' => null, 'error' => $e->getMessage()];
+    $url = 'https://login.microsoftonline.com/' . rawurlencode($cfg['TENANT_ID']) . '/oauth2/v2.0/token';
+    $body = http_build_query([
+        'client_id'     => $cfg['CLIENT_ID'],
+        'client_secret' => $secret,
+        'scope'         => 'https://graph.microsoft.com/.default',
+        'grant_type'    => 'client_credentials',
+    ]);
+    $r = rl_http_post($url, $body, ['Content-Type: application/x-www-form-urlencoded']);
+    if ($r['error']) return ['ok' => false, 'error' => $r['error']];
+    $d = json_decode($r['body'], true);
+    if ($r['status'] >= 200 && $r['status'] < 300 && !empty($d['access_token'])) {
+        return ['ok' => true, 'token' => $d['access_token']];
     }
+    $msg = $d['error_description'] ?? ($d['error'] ?? ('HTTP ' . $r['status']));
+    // first line only (Azure error_description is long)
+    $msg = trim(strtok((string)$msg, "\r\n"));
+    return ['ok' => false, 'error' => 'Token request failed: ' . $msg];
+}
+
+function rl_send_graph(array $opts) {
+    $cfg = rl_config();
+    $tok = rl_graph_token();
+    if (!$tok['ok']) return ['ok' => false, 'status' => 502, 'id' => null, 'error' => $tok['error']];
+
+    $to = is_array($opts['to']) ? $opts['to'] : [$opts['to']];
+    $message = [
+        'subject'      => $opts['subject'] ?? '',
+        'body'         => ['contentType' => 'HTML', 'content' => $opts['html'] ?? ''],
+        'toRecipients' => array_map(fn($a) => ['emailAddress' => ['address' => $a]], $to),
+    ];
+    if (!empty($cfg['REPLY_TO'])) {
+        $message['replyTo'] = [['emailAddress' => ['address' => $cfg['REPLY_TO']]]];
+    }
+    $payload = json_encode(['message' => $message, 'saveToSentItems' => true]);
+
+    $url = 'https://graph.microsoft.com/v1.0/users/' . rawurlencode($cfg['SENDER']) . '/sendMail';
+    $r = rl_http_post($url, $payload, [
+        'Authorization: Bearer ' . $tok['token'],
+        'Content-Type: application/json',
+    ]);
+    if ($r['error']) return ['ok' => false, 'status' => 0, 'id' => null, 'error' => $r['error']];
+    if ($r['status'] === 202) return ['ok' => true, 'status' => 202, 'id' => null, 'error' => null];
+
+    $d = json_decode($r['body'], true);
+    $msg = $d['error']['message'] ?? ($d['error'] ?? ('HTTP ' . $r['status']));
+    return ['ok' => false, 'status' => $r['status'], 'id' => null, 'error' => is_string($msg) ? $msg : json_encode($msg)];
 }
 
 /* ---------- Order confirmation (shared by both endpoints) ------------ */
@@ -99,7 +132,7 @@ function rl_send_order_confirmation(array $data) {
     } catch (Throwable $e) {
         return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'Template error: ' . $e->getMessage()];
     }
-    $res = rl_send_smtp(['to' => $data['customer_email'], 'subject' => $subject, 'html' => $html]);
+    $res = rl_send_graph(['to' => $data['customer_email'], 'subject' => $subject, 'html' => $html]);
     $res['subject'] = $subject;
     return $res;
 }
