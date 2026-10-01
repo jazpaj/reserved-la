@@ -112,6 +112,7 @@ function headerHTML(active){
         ${link('shop.html?cat=Bottoms','Bottoms','')}
         ${link('shop.html?cat=Hoodies','Hoodies','')}
         ${link('shop.html?cat=Headwear','Headwear','')}
+        ${link('shop.html?cat=Accessories','Accessories','')}
       </nav>
       <div class="hd-icons">
         <button class="icon-btn" aria-label="Search" onclick="openSearch()">${ICON.search}</button>
@@ -135,6 +136,7 @@ function headerHTML(active){
       <a href="shop.html?cat=Bottoms">Bottoms</a>
       <a href="shop.html?cat=Hoodies">Hoodies</a>
       <a href="shop.html?cat=Headwear">Headwear</a>
+      <a href="shop.html?cat=Accessories">Accessories</a>
       <a href="about.html">About</a>
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>

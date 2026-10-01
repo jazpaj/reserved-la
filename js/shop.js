@@ -47,7 +47,7 @@ function featured(n){
 }
 
 /* ---- Shop page ---- */
-const CATS=["All","Shorts","Denim","Jackets","Bottoms","Hoodies","Headwear"];
+const CATS=["All","Shorts","Denim","Jackets","Bottoms","Hoodies","Headwear","Accessories"];
 
 const PER_PAGE=12;
 
@@ -303,6 +303,22 @@ const SIZE_CHARTS = {
       "Beanies stretch to fit; caps adjust via the rear strap/snap."
     ],
     noUnits: true
+  },
+  accessories: {
+    title: "Accessories Size Guide",
+    note: "Most accessories are one size. Belts run S–L by waist.",
+    cols: ["Size","Fits"],
+    rows: [
+      ["One Size", "Socks fit US men's 7–12 / women's 8–13; wristbands & bandanas stretch/wrap to fit"],
+      ["Belt S", "Waist 28–32 in"],
+      ["Belt M", "Waist 30–34 in"],
+      ["Belt L", "Waist 34–38 in"]
+    ],
+    tips: [
+      "Socks are one size and stretch to fit the ranges above.",
+      "For belts, pick the size that brackets your natural waist; webbing trims to length."
+    ],
+    noUnits: true
   }
 };
 
@@ -310,6 +326,7 @@ function sizeGuideType(cat){
   if(cat==="Denim"||cat==="Bottoms") return "pants";
   if(cat==="Shorts") return "shorts";
   if(cat==="Headwear") return "headwear";
+  if(cat==="Accessories") return "accessories";
   return "tops"; // Hoodies, Jackets, T-Shirts
 }
 
