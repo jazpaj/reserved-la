@@ -191,7 +191,7 @@ function footerHTML(){
           <h4>Legal</h4>
           <a href="privacy-policy.html">Privacy Policy</a>
           <a href="terms.html">Terms &amp; Conditions</a>
-          <a href="refund-policy.html">Refunds</a>
+          <a href="refund-policy.html">Returns &amp; Refund Policy</a>
           <a href="shipping-policy.html">Fulfillment Policy</a>
         </div>
       </div>
