@@ -841,3 +841,15 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
   cursor:pointer;transition:background .2s ease,color .2s ease,transform .2s ease}
 .rnav:hover{background:var(--ink);color:#fff;transform:scale(1.06)}
 @media(max-width:860px){ .rail-arrows{display:none} }
+
+/* ---------- Editorial mosaic (homepage product sections) ---------- */
+.mosaic{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.mosaic > .feat{grid-column:span 2;grid-row:span 2;display:flex}
+.mosaic > .feat > .card{width:100%;height:100%}
+.mosaic > .feat .imgwrap{aspect-ratio:auto;flex:1 1 auto;min-height:0}
+.mosaic > .feat .info{padding:16px 16px 18px}
+@media(max-width:760px){
+  .mosaic{grid-template-columns:1fr 1fr}
+  .mosaic > .feat{grid-column:1 / -1;grid-row:auto}
+  .mosaic > .feat .imgwrap{aspect-ratio:3/4;flex:none}
+}

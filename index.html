@@ -27,9 +27,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=124">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=124">
-<link rel="stylesheet" href="styles.css?v=124">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=125">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=125">
+<link rel="stylesheet" href="styles.css?v=125">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -74,15 +74,9 @@
     <div class="wrap">
       <div class="sec-head">
         <div><div class="eyebrow">Fan Favourites</div><h2>Best Sellers</h2></div>
-        <div class="rail-tools">
-          <a class="link" href="shop.html?sort=rating">Shop Best Sellers</a>
-          <div class="rail-arrows">
-            <button class="rnav" aria-label="Scroll left" onclick="railScroll('bestGrid',-1)">&#8249;</button>
-            <button class="rnav" aria-label="Scroll right" onclick="railScroll('bestGrid',1)">&#8250;</button>
-          </div>
-        </div>
+        <a class="link" href="shop.html?sort=rating">Shop Best Sellers</a>
       </div>
-      <div class="p-rail" id="bestGrid"></div>
+      <div class="mosaic" id="bestGrid"></div>
     </div>
   </section>
 
@@ -103,15 +97,9 @@
   <section class="wrap">
     <div class="sec-head">
       <div><div class="eyebrow">New Collection</div><h2>Shorts</h2></div>
-      <div class="rail-tools">
-        <a class="link" href="shop.html?cat=Shorts">View All</a>
-        <div class="rail-arrows">
-          <button class="rnav" aria-label="Scroll left" onclick="railScroll('shortsGrid',-1)">&#8249;</button>
-          <button class="rnav" aria-label="Scroll right" onclick="railScroll('shortsGrid',1)">&#8250;</button>
-        </div>
-      </div>
+      <a class="link" href="shop.html?cat=Shorts">View All</a>
     </div>
-    <div class="p-rail" id="shortsGrid"></div>
+    <div class="mosaic" id="shortsGrid"></div>
   </section>
 
   <!-- EDITORIAL -->
@@ -132,15 +120,9 @@
     <div class="wrap">
       <div class="sec-head">
         <div><div class="eyebrow">Fresh Off The Press</div><h2>New Arrivals</h2></div>
-        <div class="rail-tools">
-          <a class="link" href="shop.html?sort=new">Shop New In</a>
-          <div class="rail-arrows">
-            <button class="rnav" aria-label="Scroll left" onclick="railScroll('newGrid',-1)">&#8249;</button>
-            <button class="rnav" aria-label="Scroll right" onclick="railScroll('newGrid',1)">&#8250;</button>
-          </div>
-        </div>
+        <a class="link" href="shop.html?sort=new">Shop New In</a>
       </div>
-      <div class="p-rail" id="newGrid"></div>
+      <div class="mosaic" id="newGrid"></div>
     </div>
   </section>
 
@@ -206,9 +188,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=124"></script>
-<script src="js/site.js?v=124"></script>
-<script src="js/shop.js?v=124"></script>
+<script src="js/data.js?v=125"></script>
+<script src="js/site.js?v=125"></script>
+<script src="js/shop.js?v=125"></script>
 <script>
   mountChrome("home");
 
@@ -252,18 +234,14 @@
     return out;
   }
   const _plain=(list,n)=>{ const out=[]; for(const p of list){ if(out.length>=n) break; if(!_used.has(p.id)){ _used.add(p.id); out.push(p);} } return out; };
-  renderGrid("bestGrid",  _diverse(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 10));
-  renderGrid("newGrid",   _diverse(PRODUCTS.filter(p=>p.tag==="NEW"), 10, ["Shorts"]));
-  renderGrid("shortsGrid",_plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 12));
-
-  // Carousel arrows — scroll a product rail by ~two cards
-  function railScroll(id,dir){
+  // Editorial mosaic: first product is the large feature, next four fill the 2x2.
+  function renderMosaic(id,list){
     const el=document.getElementById(id); if(!el) return;
-    const card=el.querySelector('.card');
-    const step=(card?card.getBoundingClientRect().width:280)+18;
-    el.scrollBy({left:dir*step*2,behavior:'smooth'});
+    el.innerHTML = list.map((p,i)=> i===0 ? `<div class="feat">${cardHTML(p)}</div>` : cardHTML(p)).join("");
   }
-  window.railScroll=railScroll;
+  renderMosaic("bestGrid",  _diverse(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 5));
+  renderMosaic("newGrid",   _diverse(PRODUCTS.filter(p=>p.tag==="NEW"), 5, ["Shorts"]));
+  renderMosaic("shortsGrid",_plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 5));
 
   // lookbook — real photography
   const looks=["assets/lifestyle/life-white.jpg","assets/lifestyle/life-industrial.jpg","assets/lifestyle/life-tank.jpg"];
