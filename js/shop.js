@@ -16,11 +16,15 @@ function cardHTML(p){
   const price = onSale
     ? `<span class="was">${fmt(p.was)}</span><span class="now sale">${fmt(p.price)}</span>`
     : `<span class="now">${fmt(p.price)}</span>`;
+  const img2 = (p.gallery && p.gallery[1]) ? p.gallery[1] : p.img;
   return `
   <div class="card">
     <div class="imgwrap">
       ${badge}
-      <a href="product.html?id=${p.id}"><img src="${p.img}" alt="${p.name}" loading="lazy"></a>
+      <a class="pimglink" href="product.html?id=${p.id}" aria-label="${p.name}">
+        <img class="pimg pimg1" src="${p.img}" alt="${p.name}" loading="lazy">
+        <img class="pimg pimg2" src="${img2}" alt="" aria-hidden="true" loading="lazy">
+      </a>
       <div class="quick"><a class="btn block sm" href="product.html?id=${p.id}">View Product</a></div>
     </div>
     <div class="info">
