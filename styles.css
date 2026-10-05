@@ -771,3 +771,43 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
   .foot-bottom{flex-direction:column;gap:8px}
   .band .track span,.band .track b{font-size:26px}
 }
+
+/* ============================================================
+   Homepage visual polish — motion / depth / imagery only.
+   No typography changes (fonts, sizes, weights, text spacing
+   are all left exactly as they were).
+   ============================================================ */
+
+/* Richer, slower image motion for an editorial feel */
+.card .imgwrap img{transition:transform .65s cubic-bezier(.2,.6,.2,1)}
+.card:hover .imgwrap img{transform:scale(1.05)}
+.col-tile .ph{transition:transform .7s cubic-bezier(.2,.6,.2,1)}
+.col-tile:hover .ph{transform:scale(1.07)}
+
+/* Product cards — cleaner, "floating" presentation */
+.card .imgwrap{background:var(--cream);border-color:rgba(17,17,17,.06);
+  transition:box-shadow .35s ease,border-color .35s ease}
+.card:hover .imgwrap{box-shadow:0 16px 34px rgba(0,0,0,.11);border-color:rgba(17,17,17,.10)}
+
+/* Category tiles — more depth + a gentle hover darken */
+.col-tile{box-shadow:0 2px 14px rgba(0,0,0,.05)}
+.col-tile::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:rgba(0,0,0,0);transition:background .4s ease}
+.col-tile:hover::after{background:rgba(0,0,0,.14)}
+.col-tile .cap{position:relative;z-index:1}
+
+/* Feature & editorial imagery — subtle zoom on hover */
+.feature{overflow:hidden}
+.feature-media img{transition:transform .8s cubic-bezier(.2,.6,.2,1)}
+.feature:hover .feature-media img{transform:scale(1.045)}
+
+/* Buttons — soft depth on hover (motion only) */
+.btn{transition:background .22s ease,color .22s ease,transform .22s ease,box-shadow .22s ease}
+.btn:hover{box-shadow:0 10px 24px rgba(0,0,0,.16)}
+.btn.on-dark:hover{box-shadow:0 10px 24px rgba(0,0,0,.35)}
+
+/* Trust strip + section links — small signs of life */
+.trust .cell{transition:background .3s ease}
+.trust .cell:hover{background:var(--cream)}
+.sec-head .link{transition:opacity .25s ease}
+.sec-head .link:hover{opacity:.55}
