@@ -27,9 +27,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=125">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=125">
-<link rel="stylesheet" href="styles.css?v=125">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=126">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=126">
+<link rel="stylesheet" href="styles.css?v=126">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -93,13 +93,19 @@
     </div>
   </section>
 
-  <!-- SHORTS GRID -->
+  <!-- SHORTS GRID (carousel) -->
   <section class="wrap">
     <div class="sec-head">
       <div><div class="eyebrow">New Collection</div><h2>Shorts</h2></div>
-      <a class="link" href="shop.html?cat=Shorts">View All</a>
+      <div class="rail-tools">
+        <a class="link" href="shop.html?cat=Shorts">View All</a>
+        <div class="rail-arrows">
+          <button class="rnav" aria-label="Scroll left" onclick="railScroll('shortsGrid',-1)">&#8249;</button>
+          <button class="rnav" aria-label="Scroll right" onclick="railScroll('shortsGrid',1)">&#8250;</button>
+        </div>
+      </div>
     </div>
-    <div class="mosaic" id="shortsGrid"></div>
+    <div class="p-rail" id="shortsGrid"></div>
   </section>
 
   <!-- EDITORIAL -->
@@ -122,7 +128,7 @@
         <div><div class="eyebrow">Fresh Off The Press</div><h2>New Arrivals</h2></div>
         <a class="link" href="shop.html?sort=new">Shop New In</a>
       </div>
-      <div class="mosaic" id="newGrid"></div>
+      <div class="mosaic mirror" id="newGrid"></div>
     </div>
   </section>
 
@@ -188,9 +194,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=125"></script>
-<script src="js/site.js?v=125"></script>
-<script src="js/shop.js?v=125"></script>
+<script src="js/data.js?v=126"></script>
+<script src="js/site.js?v=126"></script>
+<script src="js/shop.js?v=126"></script>
 <script>
   mountChrome("home");
 
@@ -239,9 +245,18 @@
     const el=document.getElementById(id); if(!el) return;
     el.innerHTML = list.map((p,i)=> i===0 ? `<div class="feat">${cardHTML(p)}</div>` : cardHTML(p)).join("");
   }
-  renderMosaic("bestGrid",  _diverse(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 5));
-  renderMosaic("newGrid",   _diverse(PRODUCTS.filter(p=>p.tag==="NEW"), 5, ["Shorts"]));
-  renderMosaic("shortsGrid",_plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 5));
+  // Carousel arrows — scroll a product rail by ~two cards
+  function railScroll(id,dir){
+    const el=document.getElementById(id); if(!el) return;
+    const c=el.querySelector('.card'); const step=(c?c.getBoundingClientRect().width:300)+18;
+    el.scrollBy({left:dir*step*2,behavior:'smooth'});
+  }
+  window.railScroll=railScroll;
+
+  // Three distinct layouts: mosaic (left feature) / carousel / mirrored mosaic (right feature)
+  renderMosaic("bestGrid", _diverse(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 5));
+  renderGrid("shortsGrid", _plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 10));
+  renderMosaic("newGrid",  _diverse(PRODUCTS.filter(p=>p.tag==="NEW"), 5, ["Shorts"]));
 
   // lookbook — real photography
   const looks=["assets/lifestyle/life-white.jpg","assets/lifestyle/life-industrial.jpg","assets/lifestyle/life-tank.jpg"];

@@ -853,3 +853,9 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
   .mosaic > .feat{grid-column:1 / -1;grid-row:auto}
   .mosaic > .feat .imgwrap{aspect-ratio:3/4;flex:none}
 }
+
+/* Mirrored mosaic — large feature on the right */
+.mosaic.mirror > .feat{grid-column:3 / span 2;grid-row:1 / span 2}
+@media(max-width:760px){
+  .mosaic.mirror > .feat{grid-column:1 / -1;grid-row:auto}
+}
