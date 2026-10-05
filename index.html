@@ -215,12 +215,24 @@
       <div class="cap"><span>${x.s}</span><h3>${x.t}</h3></div>
     </a>`).join("");
 
-  // Product rows — no product repeats across Best Sellers / New Arrivals / Shorts.
+  // Product rows — spread across categories so each section feels distinct,
+  // and no product repeats across sections.
   const _used=new Set();
-  const _pick=(list,n)=>{ const out=[]; for(const p of list){ if(out.length>=n) break; if(!_used.has(p.id)){ _used.add(p.id); out.push(p); } } return out; };
-  renderGrid("bestGrid",  _pick(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 4));
-  renderGrid("newGrid",   _pick(PRODUCTS.filter(p=>p.tag==="NEW"), 4));
-  renderGrid("shortsGrid",_pick(PRODUCTS.filter(p=>p.cat==="Shorts"), 8));
+  function _diverse(list,n,skip){
+    skip=skip||[];
+    const q=new Map();
+    for(const p of list){ if(_used.has(p.id)||skip.includes(p.cat)) continue; if(!q.has(p.cat)) q.set(p.cat,[]); q.get(p.cat).push(p); }
+    const queues=[...q.values()], out=[];
+    for(let r=0; out.length<n && queues.some(x=>x.length>r); r++){
+      for(const x of queues){ if(out.length>=n) break; if(x[r]){ out.push(x[r]); _used.add(x[r].id); } }
+    }
+    for(const p of list){ if(out.length>=n) break; if(!_used.has(p.id)){ _used.add(p.id); out.push(p); } }
+    return out;
+  }
+  const _plain=(list,n)=>{ const out=[]; for(const p of list){ if(out.length>=n) break; if(!_used.has(p.id)){ _used.add(p.id); out.push(p);} } return out; };
+  renderGrid("bestGrid",  _diverse(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 4));
+  renderGrid("newGrid",   _diverse(PRODUCTS.filter(p=>p.tag==="NEW"), 4, ["Shorts"]));
+  renderGrid("shortsGrid",_plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 8));
 
   // lookbook — real photography
   const looks=["assets/lifestyle/life-white.jpg","assets/lifestyle/life-industrial.jpg","assets/lifestyle/life-tank.jpg"];
