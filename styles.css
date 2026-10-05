@@ -859,3 +859,7 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
 @media(max-width:760px){
   .mosaic.mirror > .feat{grid-column:1 / -1;grid-row:auto}
 }
+
+/* ---------- Square card field ---------- */
+.sq-card{min-height:52px;margin-top:4px}
+.sq-status{font-size:12px;color:var(--muted);margin-top:8px}

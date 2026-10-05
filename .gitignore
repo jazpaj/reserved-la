@@ -12,3 +12,6 @@ node_modules/
 # Email system secret & build artifacts
 mail/config.php
 *.zip
+
+# Square secret
+pay/config.php

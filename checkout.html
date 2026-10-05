@@ -18,9 +18,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=127">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=127">
-<link rel="stylesheet" href="styles.css?v=127">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=128">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=128">
+<link rel="stylesheet" href="styles.css?v=128">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -35,8 +35,8 @@
 </main>
 
 <div id="footer-slot"></div>
-<script src="js/data.js?v=127"></script>
-<script src="js/site.js?v=127"></script>
+<script src="js/data.js?v=128"></script>
+<script src="js/site.js?v=128"></script>
 <script>
 mountChrome("");
 
@@ -106,13 +106,9 @@ mountChrome("");
 
         <div class="co-section">
           <h2>Payment</h2>
-          <div class="co-badge">${ICON.lock} All transactions are secure and encrypted.</div>
-          <div class="co-row"><div class="field"><label>Card number</label><input type="text" name="cardNum" inputmode="numeric" autocomplete="cc-number" required placeholder="1234 1234 1234 1234"></div></div>
-          <div class="co-row two" style="margin-top:14px">
-            <div class="field"><label>Expiry (MM/YY)</label><input type="text" name="cardExp" autocomplete="cc-exp" required placeholder="MM/YY"></div>
-            <div class="field"><label>CVC</label><input type="text" name="cardCvc" inputmode="numeric" autocomplete="cc-csc" required placeholder="123"></div>
-          </div>
-          <div class="co-row" style="margin-top:14px"><div class="field"><label>Name on card</label><input type="text" name="cardName" required placeholder="Jane Doe"></div></div>
+          <div class="co-badge">${ICON.lock} Card details are encrypted by Square — we never see your full card number.</div>
+          <div id="sq-card" class="sq-card"></div>
+          <div class="sq-status" id="sqStatus"></div>
         </div>
 
         <div class="co-section">
@@ -154,6 +150,60 @@ mountChrome("");
     </form>`;
 
     document.getElementById("coForm").addEventListener("submit", onPay);
+    attachSquare();
+  }
+
+  // ---------- Square Web Payments SDK ----------
+  const baseUrl = () => location.pathname.replace(/[^/]*$/, "");
+  let sqConfig=null, sqPayments=null, sqCard=null;
+  async function ensureSquareSdk(cfg){
+    if(window.Square) return;
+    const src = cfg.env==="production"
+      ? "https://web.squarecdn.com/v1/square.js"
+      : "https://sandbox.web.squarecdn.com/v1/square.js";
+    await new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=()=>rej(new Error("Square SDK failed to load")); document.head.appendChild(s); });
+  }
+  async function attachSquare(){
+    const cont=document.getElementById("sq-card"); if(!cont) return;
+    try{
+      if(!sqConfig){ sqConfig = await fetch(baseUrl()+"pay/public-config.php").then(r=>r.json()); }
+      if(!sqConfig.configured){ cont.innerHTML='<p class="co-fine" style="margin:0">Card payment isn’t configured yet.</p>'; return; }
+      await ensureSquareSdk(sqConfig);
+      if(!sqPayments) sqPayments = window.Square.payments(sqConfig.appId, sqConfig.locationId);
+      if(sqCard){ try{ await sqCard.destroy(); }catch(e){} sqCard=null; }
+      sqCard = await sqPayments.card();
+      await sqCard.attach("#sq-card");
+    }catch(e){ console.error("Square init failed", e); cont.innerHTML='<p class="co-fine" style="margin:0">Couldn’t load the payment form. Please refresh.</p>'; }
+  }
+
+  async function onPay(e){
+    e.preventDefault();
+    const f=e.target;
+    if(!f.checkValidity()){ f.reportValidity(); return; }
+    if(!document.getElementById("agree").checked){
+      document.getElementById("payHint").textContent="Please check the box above to complete your order."; return;
+    }
+    const btn=document.getElementById("payBtn"); const label=btn.innerHTML;
+    const hint=document.getElementById("payHint"); hint.textContent="";
+    if(!sqCard){ hint.textContent="Payment form isn’t ready yet — please wait a moment and try again."; return; }
+    btn.disabled=true; btn.innerHTML="Processing…";
+    try{
+      const result = await sqCard.tokenize();
+      if(result.status!=="OK"){
+        const m=(result.errors&&result.errors[0]&&result.errors[0].message)||"Please check your card details.";
+        throw new Error(m);
+      }
+      const items = getCart().map(l=>({id:l.id, qty:l.qty}));
+      const resp = await fetch(baseUrl()+"pay/process-payment.php",{
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({token:result.token, items, promo:promoCode})
+      }).then(r=>r.json());
+      if(!resp.ok){ throw new Error(resp.error||"Payment could not be completed."); }
+      confirmOrder(resp);
+    }catch(err){
+      hint.textContent = err.message || "Payment failed. Please try again.";
+      btn.disabled=false; btn.innerHTML=label;
+    }
   }
 
   window.toggleBilling = function(cb){ document.getElementById("billingFields").hidden = cb.checked; };
@@ -166,22 +216,7 @@ mountChrome("");
     render();
   };
 
-  function onPay(e){
-    e.preventDefault();
-    const f = e.target;
-    if(!f.checkValidity()){ f.reportValidity(); return; }
-    if(!document.getElementById("agree").checked){
-      document.getElementById("payHint").textContent = "Please check the box above to complete your order.";
-      return;
-    }
-    // NOTE: front-end demo only. Connect a real PCI-compliant processor (Stripe, etc.)
-    // and replace the raw card fields with the processor's hosted fields before taking live payments.
-    const btn = document.getElementById("payBtn");
-    btn.disabled = true; btn.innerHTML = "Processing…";
-    setTimeout(confirmOrder, 900);
-  }
-
-  function confirmOrder(){
+  function confirmOrder(pay){
     const order = "RL-" + Math.floor(100000 + Math.random()*900000);
     const f = document.getElementById("coForm");
     const g = n => { const el = f && f.querySelector('[name='+n+']'); return el ? (el.value||"").trim() : ""; };
@@ -192,7 +227,7 @@ mountChrome("");
     try {
       const t = totals();
       const abs = u => { try { return new URL(u, location.href).href; } catch(e){ return u; } };
-      const last4 = g("cardNum").replace(/\D/g,"").slice(-4);
+      const last4 = (pay && pay.card_last4) ? pay.card_last4 : "";
       const items = getCart().map(l => {
         const p = (typeof PRODUCTS !== "undefined") ? PRODUCTS.find(x => x.id === l.id) : null;
         return { name:l.name, color:(p&&p.color)||"", size:l.size, quantity:l.qty,
