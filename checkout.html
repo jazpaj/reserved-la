@@ -222,8 +222,8 @@ mountChrome("");
     const g = n => { const el = f && f.querySelector('[name='+n+']'); return el ? (el.value||"").trim() : ""; };
     const email = g("email") || "your email";
 
-    // Build the order payload from the cart BEFORE clearing it, then send the
-    // confirmation email via mail/place-order.php (best-effort; UI never blocks).
+    // Send the Order Confirmation email (the one we set up via mail/place-order.php).
+    // Best-effort — the UI never blocks on it.
     try {
       const t = totals();
       const abs = u => { try { return new URL(u, location.href).href; } catch(e){ return u; } };
@@ -252,13 +252,12 @@ mountChrome("");
         order_url: abs("track-order.html"),
         items: items
       };
-      const base = location.pathname.replace(/[^/]*$/, "");
-      fetch(base + "mail/place-order.php", {
+      fetch(baseUrl() + "mail/place-order.php", {
         method: "POST", headers: {"Content-Type":"application/json"},
         body: JSON.stringify(payload)
-      }).then(r => r.json()).then(d => { if (!d.ok) console.warn("Order email not sent:", d.error); })
-        .catch(err => console.warn("Order email request failed:", err));
-    } catch(e) { console.warn("Order email skipped:", e); }
+      }).then(r => r.json()).then(d => { if (!d.ok) console.warn("Order confirmation not sent:", d.error); })
+        .catch(err => console.warn("Order confirmation request failed:", err));
+    } catch(e) { console.warn("Order confirmation skipped:", e); }
 
     try{ localStorage.removeItem("rl_cart_v1"); }catch(e){}
     updateCartCount(); if(typeof renderCart==="function") renderCart();
@@ -267,7 +266,7 @@ mountChrome("");
       <div class="tick">${ICON.check}</div>
       <h1>Thank You</h1>
       <p class="ord">Your order <b>#${order}</b> has been placed.</p>
-      <p class="ord">A confirmation has been sent to <b>${email}</b>. You'll get tracking as soon as it ships (1–2 business days).</p>
+      <p class="ord">Your payment was successful and a receipt has been emailed to <b>${email}</b> by our payment processor. You'll get tracking as soon as it ships (1–2 business days).</p>
       <p style="margin:24px 0 6px"><a class="btn" href="shop.html">Continue Shopping</a></p>
       <p class="co-fine" style="max-width:440px;margin:14px auto 0">Questions about your order? Email <a href="mailto:support@reservedla.com">support@reservedla.com</a>.</p>
     </div>`;
