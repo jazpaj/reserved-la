@@ -811,3 +811,22 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
 .trust .cell:hover{background:var(--cream)}
 .sec-head .link{transition:opacity .25s ease}
 .sec-head .link:hover{opacity:.55}
+
+/* ---------- Homepage product carousels (rails) ---------- */
+.prow{position:relative}
+.p-rail{display:flex;gap:18px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 2px 10px}
+.p-rail::-webkit-scrollbar{display:none}
+.p-rail > .card{flex:0 0 clamp(240px,23%,300px);scroll-snap-align:start}
+.prow-nav{position:absolute;top:34%;z-index:4;width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,.97);border:1px solid var(--line);box-shadow:var(--shadow-sm);
+  color:var(--ink);font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .2s ease,transform .2s ease,opacity .2s ease}
+.prow-nav:hover{background:var(--ink);color:#fff;transform:translateY(-50%) scale(1.06)}
+.prow-nav{transform:translateY(-50%)}
+.prow-nav.prev{left:-14px}
+.prow-nav.next{right:-14px}
+@media(max-width:860px){
+  .p-rail > .card{flex-basis:clamp(220px,64%,280px)}
+  .prow-nav{display:none}
+}
