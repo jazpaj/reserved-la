@@ -27,9 +27,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=123">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=123">
-<link rel="stylesheet" href="styles.css?v=123">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=124">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=124">
+<link rel="stylesheet" href="styles.css?v=124">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -70,15 +70,19 @@
   </section>
 
   <!-- BEST SELLERS -->
-  <section class="wrap" style="padding-top:0">
-    <div class="sec-head">
-      <div><div class="eyebrow">Fan Favourites</div><h2>Best Sellers</h2></div>
-      <a class="link" href="shop.html?sort=rating">Shop Best Sellers</a>
-    </div>
-    <div class="prow">
-      <button class="prow-nav prev" aria-label="Scroll left" onclick="railScroll('bestGrid',-1)">&#8249;</button>
+  <section class="prod-band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">Fan Favourites</div><h2>Best Sellers</h2></div>
+        <div class="rail-tools">
+          <a class="link" href="shop.html?sort=rating">Shop Best Sellers</a>
+          <div class="rail-arrows">
+            <button class="rnav" aria-label="Scroll left" onclick="railScroll('bestGrid',-1)">&#8249;</button>
+            <button class="rnav" aria-label="Scroll right" onclick="railScroll('bestGrid',1)">&#8250;</button>
+          </div>
+        </div>
+      </div>
       <div class="p-rail" id="bestGrid"></div>
-      <button class="prow-nav next" aria-label="Scroll right" onclick="railScroll('bestGrid',1)">&#8250;</button>
     </div>
   </section>
 
@@ -99,13 +103,15 @@
   <section class="wrap">
     <div class="sec-head">
       <div><div class="eyebrow">New Collection</div><h2>Shorts</h2></div>
-      <a class="link" href="shop.html?cat=Shorts">View All</a>
+      <div class="rail-tools">
+        <a class="link" href="shop.html?cat=Shorts">View All</a>
+        <div class="rail-arrows">
+          <button class="rnav" aria-label="Scroll left" onclick="railScroll('shortsGrid',-1)">&#8249;</button>
+          <button class="rnav" aria-label="Scroll right" onclick="railScroll('shortsGrid',1)">&#8250;</button>
+        </div>
+      </div>
     </div>
-    <div class="prow">
-      <button class="prow-nav prev" aria-label="Scroll left" onclick="railScroll('shortsGrid',-1)">&#8249;</button>
-      <div class="p-rail" id="shortsGrid"></div>
-      <button class="prow-nav next" aria-label="Scroll right" onclick="railScroll('shortsGrid',1)">&#8250;</button>
-    </div>
+    <div class="p-rail" id="shortsGrid"></div>
   </section>
 
   <!-- EDITORIAL -->
@@ -122,15 +128,19 @@
   </section>
 
   <!-- NEW ARRIVALS -->
-  <section class="wrap">
-    <div class="sec-head">
-      <div><div class="eyebrow">Fresh Off The Press</div><h2>New Arrivals</h2></div>
-      <a class="link" href="shop.html?sort=new">Shop New In</a>
-    </div>
-    <div class="prow">
-      <button class="prow-nav prev" aria-label="Scroll left" onclick="railScroll('newGrid',-1)">&#8249;</button>
+  <section class="prod-band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">Fresh Off The Press</div><h2>New Arrivals</h2></div>
+        <div class="rail-tools">
+          <a class="link" href="shop.html?sort=new">Shop New In</a>
+          <div class="rail-arrows">
+            <button class="rnav" aria-label="Scroll left" onclick="railScroll('newGrid',-1)">&#8249;</button>
+            <button class="rnav" aria-label="Scroll right" onclick="railScroll('newGrid',1)">&#8250;</button>
+          </div>
+        </div>
+      </div>
       <div class="p-rail" id="newGrid"></div>
-      <button class="prow-nav next" aria-label="Scroll right" onclick="railScroll('newGrid',1)">&#8250;</button>
     </div>
   </section>
 
@@ -196,9 +206,9 @@
 
 <div id="footer-slot"></div>
 
-<script src="js/data.js?v=123"></script>
-<script src="js/site.js?v=123"></script>
-<script src="js/shop.js?v=123"></script>
+<script src="js/data.js?v=124"></script>
+<script src="js/site.js?v=124"></script>
+<script src="js/shop.js?v=124"></script>
 <script>
   mountChrome("home");
 

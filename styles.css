@@ -830,3 +830,14 @@ table.sg-table td:first-child,table.sg-table th:first-child{font-weight:700;text
   .p-rail > .card{flex-basis:clamp(220px,64%,280px)}
   .prow-nav{display:none}
 }
+
+/* ---------- Product sections v2: header controls, bigger cards, tinted panels ---------- */
+.prod-band{background:var(--cream)}
+.p-rail > .card{flex-basis:clamp(260px,31%,360px)}
+.rail-tools{display:flex;align-items:center;gap:18px}
+.rail-arrows{display:flex;gap:8px}
+.rnav{width:42px;height:42px;border-radius:50%;background:var(--paper);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;color:var(--ink);
+  cursor:pointer;transition:background .2s ease,color .2s ease,transform .2s ease}
+.rnav:hover{background:var(--ink);color:#fff;transform:scale(1.06)}
+@media(max-width:860px){ .rail-arrows{display:none} }
