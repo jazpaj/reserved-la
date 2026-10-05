@@ -209,15 +209,15 @@
 
   // collections — 9 tiles (3x3). Accessories featured across 3 sub-tiles.
   const tiles=[
-    {t:"Shorts",   s:"Cargos, Jorts & Camo", href:"shop.html?cat=Shorts",      img:"assets/products/rl-sp26061297av-front2.jpg"},
-    {t:"Denim",    s:"Baggy & Barrel",       href:"shop.html?cat=Denim",       img:"assets/products/rl-sp251104soik-front.jpg"},
-    {t:"Jackets",  s:"Outerwear",            href:"shop.html?cat=Jackets",     img:"assets/products/rl-sp251119we8r-front.jpg"},
-    {t:"Bottoms",  s:"Cargos & Sweats",      href:"shop.html?cat=Bottoms",     img:"assets/products/rl-sp260302osst-front.jpg"},
-    {t:"Headwear", s:"Caps & Beanies",       href:"shop.html?cat=Headwear",    img:"assets/products/rl-sp260813qpa7-front.jpg"},
-    {t:"Hoodies",  s:"Heavyweight Fleece",   href:"shop.html?cat=Hoodies",     img:"assets/products/rl-sp251204c5s2-front.jpg"},
-    {t:"Socks",          s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-ribbed-crew-socks-front.jpg"},
-    {t:"Belts & Carry",  s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-canvas-web-belt-front.jpg"},
-    {t:"Pins & Patches", s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-enamel-pin-set-front.jpg"}
+    {t:"Shorts",   s:"Cargos, Jorts & Camo", href:"shop.html?cat=Shorts",      img:"assets/products/rl-sp26061297av-detail2.jpg"},
+    {t:"Denim",    s:"Baggy & Barrel",       href:"shop.html?cat=Denim",       img:"assets/products/rl-sp251104soik-detail.jpg"},
+    {t:"Jackets",  s:"Outerwear",            href:"shop.html?cat=Jackets",     img:"assets/products/rl-sp251119we8r-detail.jpg"},
+    {t:"Bottoms",  s:"Cargos & Sweats",      href:"shop.html?cat=Bottoms",     img:"assets/products/rl-sp260302osst-detail.jpg"},
+    {t:"Headwear", s:"Caps & Beanies",       href:"shop.html?cat=Headwear",    img:"assets/products/rl-sp260813qpa7-detail.jpg"},
+    {t:"Hoodies",  s:"Heavyweight Fleece",   href:"shop.html?cat=Hoodies",     img:"assets/products/rl-sp251204c5s2-detail.jpg"},
+    {t:"Socks",          s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-ribbed-crew-socks-detail.jpg"},
+    {t:"Belts & Carry",  s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-canvas-web-belt-detail.jpg"},
+    {t:"Pins & Patches", s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-enamel-pin-set-detail.jpg"}
   ];
   document.getElementById("colGrid").innerHTML=tiles.map(x=>`
     <a class="col-tile" href="${x.href}">
@@ -253,9 +253,18 @@
   }
   window.railScroll=railScroll;
 
+  // Render cards using each product's close-up (detail) photo as the main image.
+  function renderGridDetail(id,list){
+    const el=document.getElementById(id); if(!el) return;
+    el.innerHTML = list.map(p=>{
+      const detail = (p.gallery && p.gallery[3]) ? p.gallery[3] : p.img;
+      return cardHTML(p).replace('src="'+p.img+'"','src="'+detail+'"');
+    }).join("");
+  }
+
   // Three distinct layouts: mosaic (left feature) / carousel / mirrored mosaic (right feature)
   renderMosaic("bestGrid", _diverse(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 5));
-  renderGrid("shortsGrid", _plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 10));
+  renderGridDetail("shortsGrid", _plain(PRODUCTS.filter(p=>p.cat==="Shorts"), 10));
   renderMosaic("newGrid",  _diverse(PRODUCTS.filter(p=>p.tag==="NEW"), 5, ["Shorts"]));
 
   // lookbook — real photography
