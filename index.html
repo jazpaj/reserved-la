@@ -197,26 +197,30 @@
     <div class="cell">${ICON.lock}<b>Secure Checkout</b><span>Encrypted &amp; protected</span></div>
     <div class="cell">${ICON.check}<b>Designed in LA</b><span>100% authentic</span></div>`;
 
-  // collections
-  const cats=[["Shorts","Cargos, Jorts & Camo"],["Denim","Baggy & Barrel"],["Jackets","Outerwear"],["Bottoms","Cargos & Sweats"],["Headwear","Caps & Beanies"],["Hoodies","Heavyweight Fleece"],["Accessories","Socks & Extras"]];
-  const tileImg={
-    "Shorts":"assets/products/rl-sp26061297av-front2.jpg",
-    "Denim":"assets/products/rl-sp251104soik-front.jpg",
-    "Jackets":"assets/products/rl-sp251119we8r-front.jpg",
-    "Bottoms":"assets/products/rl-sp260302osst-front.jpg",
-    "Headwear":"assets/products/rl-sp260813qpa7-front.jpg",
-    "Hoodies":"assets/products/rl-sp251204c5s2-front.jpg",
-    "Accessories":"assets/products/rl-ac-ribbed-crew-socks-front.jpg"
-  };
-  document.getElementById("colGrid").innerHTML=cats.map(([c,sub])=>`
-    <a class="col-tile" href="shop.html?cat=${encodeURIComponent(c)}">
-      <div class="ph" style="background-image:url('${tileImg[c]||phSvg(sub,c,{bg:CAT_BG[c]||'#17150f'})}');background-size:cover;background-position:center top"></div>
-      <div class="cap"><span>${sub}</span><h3>${c}</h3></div>
+  // collections — 9 tiles (3x3). Accessories featured across 3 sub-tiles.
+  const tiles=[
+    {t:"Shorts",   s:"Cargos, Jorts & Camo", href:"shop.html?cat=Shorts",      img:"assets/products/rl-sp26061297av-front2.jpg"},
+    {t:"Denim",    s:"Baggy & Barrel",       href:"shop.html?cat=Denim",       img:"assets/products/rl-sp251104soik-front.jpg"},
+    {t:"Jackets",  s:"Outerwear",            href:"shop.html?cat=Jackets",     img:"assets/products/rl-sp251119we8r-front.jpg"},
+    {t:"Bottoms",  s:"Cargos & Sweats",      href:"shop.html?cat=Bottoms",     img:"assets/products/rl-sp260302osst-front.jpg"},
+    {t:"Headwear", s:"Caps & Beanies",       href:"shop.html?cat=Headwear",    img:"assets/products/rl-sp260813qpa7-front.jpg"},
+    {t:"Hoodies",  s:"Heavyweight Fleece",   href:"shop.html?cat=Hoodies",     img:"assets/products/rl-sp251204c5s2-front.jpg"},
+    {t:"Socks",          s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-ribbed-crew-socks-front.jpg"},
+    {t:"Belts & Carry",  s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-canvas-web-belt-front.jpg"},
+    {t:"Pins & Patches", s:"Accessories", href:"shop.html?cat=Accessories", img:"assets/products/rl-ac-enamel-pin-set-front.jpg"}
+  ];
+  document.getElementById("colGrid").innerHTML=tiles.map(x=>`
+    <a class="col-tile" href="${x.href}">
+      <div class="ph" style="background-image:url('${x.img}');background-size:cover;background-position:center top"></div>
+      <div class="cap"><span>${x.s}</span><h3>${x.t}</h3></div>
     </a>`).join("");
 
-  renderGrid("bestGrid", bestSellers(4));
-  renderGrid("newGrid", newArrivals(4));
-  renderGrid("shortsGrid", PRODUCTS.filter(p=>p.cat==="Shorts").slice(0,8));
+  // Product rows — no product repeats across Best Sellers / New Arrivals / Shorts.
+  const _used=new Set();
+  const _pick=(list,n)=>{ const out=[]; for(const p of list){ if(out.length>=n) break; if(!_used.has(p.id)){ _used.add(p.id); out.push(p); } } return out; };
+  renderGrid("bestGrid",  _pick(PRODUCTS.filter(p=>p.tag==="BEST SELLER"), 4));
+  renderGrid("newGrid",   _pick(PRODUCTS.filter(p=>p.tag==="NEW"), 4));
+  renderGrid("shortsGrid",_pick(PRODUCTS.filter(p=>p.cat==="Shorts"), 8));
 
   // lookbook — real photography
   const looks=["assets/lifestyle/life-white.jpg","assets/lifestyle/life-industrial.jpg","assets/lifestyle/life-tank.jpg"];
