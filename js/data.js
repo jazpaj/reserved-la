@@ -10,7 +10,7 @@ const BRAND = {
   email: "support@reservedla.com",
   phone: "310-634-0792",
   phoneHref: "tel:+13106340792",
-  address1: "6801 Hollywood Blvd Ste 121",
+  address1: "6801 Hollywood Blvd Ste 263",
   address2: "Hollywood, CA 90028",
   country: "United States",
   hours: "Customer Service: 7 days a week, 8AM–8PM PT",
