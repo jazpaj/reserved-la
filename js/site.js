@@ -253,8 +253,7 @@ function renderCart(){
   foot.innerHTML=`
     <div class="subrow"><span>Subtotal</span><span>${fmt(sub)}</span></div>
     <div class="ship-note">${remaining>0?`Add <b>${fmt(remaining)}</b> for free shipping`:"🎉 You've unlocked free shipping!"}</div>
-    <button class="btn block" onclick="checkout()">Checkout · ${fmt(sub)}</button>
-    <div class="secure">${'🔒'} Secure checkout — Visa · Mastercard · Amex · Apple Pay</div>`;
+    <button class="btn block" onclick="checkout()">Checkout · ${fmt(sub)}</button>`;
   updateCartCount();
 }
 
