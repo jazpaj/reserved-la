@@ -141,10 +141,10 @@ function rl_send_order_confirmation(array $data) {
 
 function rl_sample_order() {
     $items = [
-        ['name'=>'Washed Hooded Chore Jacket','color'=>'Washed Black','size'=>'L','quantity'=>1,'line_total'=>'$148.00',
-         'image_url'=>'https://reservedla.com/assets/products/rl-jk-0142-front.jpg'],
+        ['name'=>'Distressed Shearling-Collar Bomber','color'=>'Tan','size'=>'L','quantity'=>1,'line_total'=>'$148.00',
+         'image_url'=>'https://reservedla.com/assets/products/rl-sp251119we8r-front.jpg'],
         ['name'=>'Baggy Multi-Pocket Cargo Jeans','color'=>'Mid Indigo','size'=>'32','quantity'=>1,'line_total'=>'$118.00',
-         'image_url'=>'https://reservedla.com/assets/products/rl-dn-0088-front.jpg'],
+         'image_url'=>'https://reservedla.com/assets/products/rl-sp230804mvtd-front.jpg'],
     ];
     return [
         'customer_first_name'=>'Alex','customer_email'=>'alex@example.com','customer_phone'=>'(310) 634-0792',
