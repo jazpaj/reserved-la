@@ -39,8 +39,8 @@ if ($want === '' || $want === 'change-this-to-a-long-random-string' || !hash_equ
 $isTest = isset($_GET['test']) && $_GET['test'] === '1';
 
 if ($isTest) {
+    // Keep the sample customer's email/phone in the body; only deliver to the test inbox.
     $data = rl_sample_order();
-    $data['customer_email'] = $cfg['TEST_RECIPIENT'];
 } else {
     $raw  = file_get_contents('php://input');
     $data = [];
@@ -61,12 +61,12 @@ if ($isTest) {
 }
 
 /* --- send ------------------------------------------------------------ */
-$res = rl_send_order_confirmation($data);
+$res = rl_send_order_confirmation($data, $isTest ? ($cfg['TEST_RECIPIENT'] ?? null) : null);
 if (!$res['ok']) http_response_code($res['status'] && $res['status'] >= 400 ? $res['status'] : 502);
 echo json_encode([
     'ok'      => $res['ok'],
     'id'      => $res['id'] ?? null,
     'error'   => $res['error'] ?? null,
-    'to'      => $data['customer_email'],
+    'to'      => $isTest ? ($cfg['TEST_RECIPIENT'] ?? $data['customer_email']) : $data['customer_email'],
     'subject' => $res['subject'] ?? null,
 ]);

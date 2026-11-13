@@ -119,20 +119,23 @@ function rl_send_graph(array $opts) {
 
 /* ---------- Order confirmation (shared by both endpoints) ------------ */
 
-function rl_send_order_confirmation(array $data) {
+function rl_send_order_confirmation(array $data, $toOverride = null) {
     if (empty($data['customer_email']) || !filter_var($data['customer_email'], FILTER_VALIDATE_EMAIL)) {
         return ['ok' => false, 'status' => 422, 'id' => null, 'error' => 'A valid customer_email is required.'];
     }
     if (empty($data['item_count']) && !empty($data['items']) && is_array($data['items'])) {
         $data['item_count'] = count($data['items']);
     }
+    // The email body always shows the customer's own email/phone (from $data);
+    // $toOverride only changes who the message is delivered to (used for test sends).
+    $to = ($toOverride && filter_var($toOverride, FILTER_VALIDATE_EMAIL)) ? $toOverride : $data['customer_email'];
     $subject = 'Your Reserved LA order ' . ($data['order_number'] ?? '') . ' is confirmed';
     try {
         $html = rl_render_file('order-confirmation.html', $data);
     } catch (Throwable $e) {
         return ['ok' => false, 'status' => 500, 'id' => null, 'error' => 'Template error: ' . $e->getMessage()];
     }
-    $res = rl_send_graph(['to' => $data['customer_email'], 'subject' => $subject, 'html' => $html]);
+    $res = rl_send_graph(['to' => $to, 'subject' => $subject, 'html' => $html]);
     $res['subject'] = $subject;
     return $res;
 }
@@ -147,7 +150,7 @@ function rl_sample_order() {
          'image_url'=>'https://reservedla.com/assets/products/rl-sp230804mvtd-front.jpg'],
     ];
     return [
-        'customer_first_name'=>'Alex','customer_email'=>'alex@example.com','customer_phone'=>'(310) 634-0792',
+        'customer_first_name'=>'Alex','customer_email'=>'alex@example.com','customer_phone'=>'(555) 123-4567',
         'order_number'=>'RL-100482','order_date'=>date('M j, Y'),
         'payment_method'=>'Visa ending 4242','estimated_delivery'=>date('M j, Y', strtotime('+7 days')),
         'item_count'=>count($items),'items'=>$items,
