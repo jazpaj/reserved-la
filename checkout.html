@@ -237,6 +237,7 @@ mountChrome("");
       const dfmt = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
       const payload = {
         customer_email: g("email"),
+        customer_phone: g("phone"),
         customer_first_name: (g("name").split(/\s+/)[0] || ""),
         order_number: order,
         order_date: dfmt(new Date()),

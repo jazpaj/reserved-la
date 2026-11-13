@@ -147,7 +147,7 @@ function rl_sample_order() {
          'image_url'=>'https://reservedla.com/assets/products/rl-dn-0088-front.jpg'],
     ];
     return [
-        'customer_first_name'=>'Alex','customer_email'=>'alex@example.com',
+        'customer_first_name'=>'Alex','customer_email'=>'alex@example.com','customer_phone'=>'(310) 634-0792',
         'order_number'=>'RL-100482','order_date'=>date('M j, Y'),
         'payment_method'=>'Visa ending 4242','estimated_delivery'=>date('M j, Y', strtotime('+7 days')),
         'item_count'=>count($items),'items'=>$items,
