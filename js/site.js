@@ -199,7 +199,12 @@ function footerHTML(){
 
     <div class="wrap nf-bottom">
       <div class="tagline">DESIGNED IN LOS ANGELES · WORN WORLDWIDE</div>
-      <img class="foot-cards" src="assets/cc-logos.png" alt="We accept Visa, Mastercard, American Express and Discover" loading="lazy">
+      <span class="cc-logos" aria-label="We accept Visa, Mastercard, American Express and Discover">
+        <img src="assets/cards/visa.svg" alt="Visa" loading="lazy">
+        <img src="assets/cards/mastercard.svg" alt="Mastercard" loading="lazy">
+        <img src="assets/cards/amex.svg" alt="American Express" loading="lazy">
+        <img src="assets/cards/discover.svg" alt="Discover" loading="lazy">
+      </span>
       <div>© <span id="yr"></span> ${BRAND.legalName}. All rights reserved.</div>
     </div>
   </footer>`;

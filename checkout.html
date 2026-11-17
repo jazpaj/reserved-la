@@ -18,9 +18,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=132">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=132">
-<link rel="stylesheet" href="styles.css?v=132">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=133">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=133">
+<link rel="stylesheet" href="styles.css?v=133">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -35,8 +35,8 @@
 </main>
 
 <div id="footer-slot"></div>
-<script src="js/data.js?v=132"></script>
-<script src="js/site.js?v=132"></script>
+<script src="js/data.js?v=133"></script>
+<script src="js/site.js?v=133"></script>
 <script>
 mountChrome("");
 
@@ -107,7 +107,12 @@ mountChrome("");
         <div class="co-section">
           <h2>Payment</h2>
           <div class="co-badge">${ICON.lock} Card details are encrypted by Square — we never see your full card number.</div>
-          <img class="co-cards" src="assets/cc-logos.png" alt="We accept Visa, Mastercard, American Express and Discover" loading="lazy">
+          <span class="cc-logos co-cards" aria-label="We accept Visa, Mastercard, American Express and Discover">
+            <img src="assets/cards/visa.svg" alt="Visa" loading="lazy">
+            <img src="assets/cards/mastercard.svg" alt="Mastercard" loading="lazy">
+            <img src="assets/cards/amex.svg" alt="American Express" loading="lazy">
+            <img src="assets/cards/discover.svg" alt="Discover" loading="lazy">
+          </span>
           <div id="sq-card" class="sq-card"></div>
           <div class="sq-status" id="sqStatus"></div>
         </div>
