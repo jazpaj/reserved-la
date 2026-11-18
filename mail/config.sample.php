@@ -20,8 +20,10 @@ function rl_config() {
         'REPLY_TO' => 'support@reservedla.com',          // customer replies land in this inbox
 
         // Store copy: BCC'd on every real order confirmation so the team sees new
-        // orders. The customer never sees this address. One address (string) or
-        // several (array). Set '' to turn the store copy off.
+        // orders. The customer never sees this address. OPTIONAL — if you leave
+        // this key out entirely, it defaults to the SENDER mailbox above, so the
+        // store copy works without any edit here. Set it to send the copy to a
+        // different inbox, an array for several, or '' to turn the store copy off.
         'BCC_STORE' => 'support@reservedla.com',
 
         // --- Site / security -----------------------------------------------

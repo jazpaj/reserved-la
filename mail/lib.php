@@ -102,11 +102,15 @@ function rl_send_graph(array $opts) {
     if (!empty($cfg['REPLY_TO'])) {
         $message['replyTo'] = [['emailAddress' => ['address' => $cfg['REPLY_TO']]]];
     }
-    // Store copy: BCC an address (e.g. the shop inbox) on real sends, so the team
-    // sees each order come in. The customer never sees this address. Skipped when
-    // BCC_STORE is empty, or when it would just duplicate a recipient already on To.
-    if (empty($opts['no_bcc']) && !empty($cfg['BCC_STORE'])) {
-        $bccList = is_array($cfg['BCC_STORE']) ? $cfg['BCC_STORE'] : [$cfg['BCC_STORE']];
+    // Store copy: BCC the shop inbox on real sends, so the team sees each order
+    // come in. The customer never sees this address.
+    //   - By default (no BCC_STORE in config) it uses the SENDER mailbox, so this
+    //     works as soon as lib.php is uploaded — no config edit needed.
+    //   - Set BCC_STORE in config.php to send the copy elsewhere, or '' to turn off.
+    //   - Skipped when it would just duplicate a recipient already on To.
+    $bccSetting = array_key_exists('BCC_STORE', $cfg) ? $cfg['BCC_STORE'] : ($cfg['SENDER'] ?? '');
+    if (empty($opts['no_bcc']) && !empty($bccSetting)) {
+        $bccList = is_array($bccSetting) ? $bccSetting : [$bccSetting];
         $toLower = array_map('strtolower', $to);
         $bcc = [];
         foreach ($bccList as $addr) {
