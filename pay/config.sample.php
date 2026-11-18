@@ -1,31 +1,31 @@
 <?php
 /**
- * Reserved LA — Square payment config.
+ * Reserved LA — NMI payment config.
  *
  * SETUP:
  *   1. Copy this file to  config.php  (same folder).
- *   2. Fill in your Square IDs/token.  Never commit config.php — it holds the secret token.
+ *   2. Fill in your NMI keys.  Never commit config.php — it holds the Security Key.
  *
- * Get these from the Square Developer Dashboard (https://developer.squareup.com):
- *   - Application ID  (public — used in the browser)
- *   - Location ID     (public — used in the browser)
- *   - Access Token    (SECRET — server-side only)
- * Start with the SANDBOX credentials to test, then switch to Production.
+ * Get these from your NMI merchant dashboard (Settings → Security Keys, and
+ * Settings → Collect.js / Tokenization):
+ *   - Security Key      (SECRET — server-side only; authorizes the charge)
+ *   - Tokenization Key  (PUBLIC — used in the browser by Collect.js)
+ *
+ * Collect.js tokenizes the card in the browser, so raw card data never touches
+ * this server (PCI-light). The Security Key only lives here, server-side.
  */
-function rl_square_config() {
+function rl_nmi_config() {
     return [
-        // 'sandbox' while testing, 'production' when you go live.
-        'SQUARE_ENV'          => 'sandbox',
+        // --- Gateway host --------------------------------------------------
+        // Standard NMI direct accounts use 'secure.nmi.com'.
+        // If your NMI account is white-labeled through a reseller, set this to
+        // THAT gateway's host (e.g. 'secure.yourgateway.com'). Both the Collect.js
+        // URL and the charge URL (transact.php) are built from this one value.
+        'NMI_GATEWAY'          => 'secure.nmi.com',
 
-        // Public IDs (safe to expose to the browser):
-        'SQUARE_APP_ID'       => 'YOUR_SANDBOX_APPLICATION_ID',
-        'SQUARE_LOCATION_ID'  => 'YOUR_SANDBOX_LOCATION_ID',
-
-        // SECRET — server-side only. Use the token that matches SQUARE_ENV.
-        'SQUARE_ACCESS_TOKEN' => 'YOUR_SANDBOX_ACCESS_TOKEN',
-
-        // Square API version (date string). Bump if Square asks you to.
-        'SQUARE_VERSION'      => '2024-10-17',
+        // --- Keys ----------------------------------------------------------
+        'NMI_SECURITY_KEY'     => 'YOUR_NMI_SECURITY_KEY',      // SECRET — server-side only
+        'NMI_TOKENIZATION_KEY' => 'YOUR_NMI_TOKENIZATION_KEY',  // PUBLIC — safe in the browser
 
         // --- Order math (must match the storefront's checkout rules) ---------
         'CURRENCY'            => 'USD',

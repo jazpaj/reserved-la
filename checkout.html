@@ -18,9 +18,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=133">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=133">
-<link rel="stylesheet" href="styles.css?v=133">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=134">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=134">
+<link rel="stylesheet" href="styles.css?v=134">
 </head>
 <body>
 <div id="announce-slot"></div>
@@ -35,8 +35,8 @@
 </main>
 
 <div id="footer-slot"></div>
-<script src="js/data.js?v=133"></script>
-<script src="js/site.js?v=133"></script>
+<script src="js/data.js?v=134"></script>
+<script src="js/site.js?v=134"></script>
 <script>
 mountChrome("");
 
@@ -106,15 +106,32 @@ mountChrome("");
 
         <div class="co-section">
           <h2>Payment</h2>
-          <div class="co-badge">${ICON.lock} Card details are encrypted by Square — we never see your full card number.</div>
+          <div class="co-badge">${ICON.lock} Card details are encrypted by NMI — we never see your full card number.</div>
           <span class="cc-logos co-cards" aria-label="We accept Visa, Mastercard, American Express and Discover">
             <img src="assets/cards/visa.svg" alt="Visa" loading="lazy">
             <img src="assets/cards/mastercard.svg" alt="Mastercard" loading="lazy">
             <img src="assets/cards/amex.svg" alt="American Express" loading="lazy">
             <img src="assets/cards/discover.svg" alt="Discover" loading="lazy">
           </span>
-          <div id="sq-card" class="sq-card"></div>
-          <div class="sq-status" id="sqStatus"></div>
+
+          <!-- Demo card fields (visual only — shown when the NMI backend isn't live, e.g. the GitHub Pages preview) -->
+          <div id="demoCardFields">
+            <div class="field"><label>Card number</label><input id="cardNum" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456"></div>
+            <div class="co-row two">
+              <div class="field"><label>Expiry (MM/YY)</label><input id="cardExp" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY"></div>
+              <div class="field"><label>CVC</label><input id="cardCvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="CVC"></div>
+            </div>
+          </div>
+
+          <!-- NMI Collect.js secure fields (hosted by NMI, PCI-safe) — shown on reservedla.com -->
+          <div id="nmiCardFields" style="display:none">
+            <div class="field"><label>Card number</label><div id="nmi-ccnumber" class="nmi-field"></div></div>
+            <div class="co-row two">
+              <div class="field"><label>Expiry (MM/YY)</label><div id="nmi-ccexp" class="nmi-field"></div></div>
+              <div class="field"><label>CVC</label><div id="nmi-cvv" class="nmi-field"></div></div>
+            </div>
+          </div>
+          <div class="sq-status" id="payStatus"></div>
         </div>
 
         <div class="co-section">
@@ -156,30 +173,100 @@ mountChrome("");
     </form>`;
 
     document.getElementById("coForm").addEventListener("submit", onPay);
-    attachSquare();
+    attachNMI();
   }
 
-  // ---------- Square Web Payments SDK ----------
+  // ---------- NMI Collect.js ----------
   const baseUrl = () => location.pathname.replace(/[^/]*$/, "");
-  let sqConfig=null, sqPayments=null, sqCard=null;
-  async function ensureSquareSdk(cfg){
-    if(window.Square) return;
-    const src = cfg.env==="production"
-      ? "https://web.squarecdn.com/v1/square.js"
-      : "https://sandbox.web.squarecdn.com/v1/square.js";
-    await new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=()=>rej(new Error("Square SDK failed to load")); document.head.appendChild(s); });
+  let nmiCfg=null, nmiReady=false, nmiInit=false;
+  let paymentMode="demo";   // "demo" | "real" — auto-detected from the server
+
+  // Ask the server whether real NMI is configured. No PHP (preview host) or keys
+  // off -> stay in demo mode (no real charge). Runs once.
+  async function attachNMI(){
+    if(nmiInit) return; nmiInit=true;
+    try{ nmiCfg = await fetch(baseUrl()+"pay/public-config.php", {cache:"no-store"}).then(r=>r.json()); }
+    catch(e){ nmiCfg=null; }
+    if(nmiCfg && nmiCfg.configured){ enterRealMode(); }
+    // else: demo mode — the visible demo card fields stay.
   }
-  async function attachSquare(){
-    const cont=document.getElementById("sq-card"); if(!cont) return;
-    try{
-      if(!sqConfig){ sqConfig = await fetch(baseUrl()+"pay/public-config.php").then(r=>r.json()); }
-      if(!sqConfig.configured){ cont.innerHTML='<p class="co-fine" style="margin:0">Card payment isn’t configured yet.</p>'; return; }
-      await ensureSquareSdk(sqConfig);
-      if(!sqPayments) sqPayments = window.Square.payments(sqConfig.appId, sqConfig.locationId);
-      if(sqCard){ try{ await sqCard.destroy(); }catch(e){} sqCard=null; }
-      sqCard = await sqPayments.card();
-      await sqCard.attach("#sq-card");
-    }catch(e){ console.error("Square init failed", e); cont.innerHTML='<p class="co-fine" style="margin:0">Couldn’t load the payment form. Please refresh.</p>'; }
+
+  // Swap the visible demo inputs for NMI's secure fields and load Collect.js.
+  function enterRealMode(){
+    paymentMode="real";
+    const demo=document.getElementById("demoCardFields"); if(demo) demo.style.display="none";
+    const real=document.getElementById("nmiCardFields"); if(real) real.style.display="block";
+    ["cardNum","cardExp","cardCvc"].forEach(idn=>{ const el=document.getElementById(idn); if(el) el.disabled=true; });
+    const s=document.createElement("script");
+    s.src = nmiCfg.collectJsUrl || "https://secure.nmi.com/token/Collect.js";
+    s.setAttribute("data-tokenization-key", nmiCfg.tokenizationKey);
+    s.onload=()=>{
+      try{
+        CollectJS.configure({
+          variant:"inline", styleSniffer:false,
+          customCss:{ "border":"none","outline":"none","box-shadow":"none","background-color":"transparent",
+            "width":"100%","height":"46px","padding":"0","margin":"0",
+            "font-family":"'Inter',sans-serif","font-size":"15px","color":"#111" },
+          focusCss:{ "border":"none","outline":"none","box-shadow":"none" },
+          invalidCss:{ "color":"#c0392b","border":"none" },
+          placeholderCss:{ "color":"#9aa1b4" },
+          fields:{
+            ccnumber:{ selector:"#nmi-ccnumber", placeholder:"Card Number" },
+            ccexp:{ selector:"#nmi-ccexp", placeholder:"MM / YY" },
+            cvv:{ selector:"#nmi-cvv", placeholder:"CVV" }
+          },
+          callback: nmiCallback,
+          timeoutDuration: 15000,
+          timeoutCallback: ()=> payFail("Card entry timed out. Please re-enter your card and try again."),
+          fieldsAvailableCallback: ()=>{ nmiReady=true; },
+          validationCallback:(field,ok,msg)=>{
+            const map={ ccnumber:"nmi-ccnumber", ccexp:"nmi-ccexp", cvv:"nmi-cvv" };
+            const el=document.getElementById(map[field]); if(!el) return;
+            const emptyish = !ok && /empty|required|blank/i.test(msg||"");
+            el.classList.toggle("nmi-invalid", !ok && !emptyish);
+          }
+        });
+      }catch(e){ payFail("Payment form failed to initialise. Please refresh."); }
+    };
+    s.onerror=()=>{ payFail("Secure payment library failed to load. Please refresh."); };
+    document.head.appendChild(s);
+  }
+
+  let payBtnLabel="";
+  function setProcessing(on){
+    const btn=document.getElementById("payBtn"); if(!btn) return;
+    if(on && !payBtnLabel) payBtnLabel=btn.innerHTML;
+    btn.disabled=on;
+    btn.innerHTML = on ? "Processing…" : (payBtnLabel || btn.innerHTML);
+    const hint=document.getElementById("payHint");
+    if(hint) hint.textContent = on ? "Securely processing your payment — please don’t close this window." : "";
+  }
+  function payFail(msg){
+    setProcessing(false);
+    const btn=document.getElementById("payBtn"); if(btn) btn.disabled=false;
+    const hint=document.getElementById("payHint"); if(hint) hint.textContent = msg || "Payment failed. Please try again.";
+  }
+
+  // Collect.js calls this once the card is tokenized (real mode only).
+  function nmiCallback(resp){
+    if(!resp || !resp.token){ payFail("We couldn’t read your card. Please re-enter your details."); return; }
+    const f=document.getElementById("coForm");
+    const g=n=>{ const el=f&&f.querySelector('[name='+n+']'); return el?(el.value||"").trim():""; };
+    const sp=(g("name")||"").split(/\s+/);
+    const items=getCart().map(l=>({id:l.id, qty:l.qty}));
+    const payload={
+      token:resp.token, items, promo:promoCode,
+      email:g("email"), phone:g("phone"),
+      firstName:sp.shift()||"", lastName:sp.join(" "),
+      address:g("address"), city:g("city"), state:g("state"), zip:g("zip")
+    };
+    fetch(baseUrl()+"pay/process-payment.php",{
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)
+    }).then(r=>r.json()).then(res=>{
+      if(res && res.ok){ confirmOrder(res); }
+      else if(res && res.key_error){ confirmOrder({}); } // keys off on server -> demo confirmation
+      else { payFail((res&&res.error)||"Your payment was declined. Please try another card."); }
+    }).catch(()=> payFail("Network error while processing payment. Please try again."));
   }
 
   async function onPay(e){
@@ -189,27 +276,29 @@ mountChrome("");
     if(!document.getElementById("agree").checked){
       document.getElementById("payHint").textContent="Please check the box above to complete your order."; return;
     }
-    const btn=document.getElementById("payBtn"); const label=btn.innerHTML;
-    const hint=document.getElementById("payHint"); hint.textContent="";
-    if(!sqCard){ hint.textContent="Payment form isn’t ready yet — please wait a moment and try again."; return; }
-    btn.disabled=true; btn.innerHTML="Processing…";
-    try{
-      const result = await sqCard.tokenize();
-      if(result.status!=="OK"){
-        const m=(result.errors&&result.errors[0]&&result.errors[0].message)||"Please check your card details.";
-        throw new Error(m);
-      }
-      const items = getCart().map(l=>({id:l.id, qty:l.qty}));
-      const resp = await fetch(baseUrl()+"pay/process-payment.php",{
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({token:result.token, items, promo:promoCode})
-      }).then(r=>r.json());
-      if(!resp.ok){ throw new Error(resp.error||"Payment could not be completed."); }
-      confirmOrder(resp);
-    }catch(err){
-      hint.textContent = err.message || "Payment failed. Please try again.";
-      btn.disabled=false; btn.innerHTML=label;
+    setProcessing(true);
+    if(paymentMode==="real"){
+      if(!nmiReady || typeof CollectJS==="undefined"){ payFail("Payment form is still loading — please try again in a moment."); return; }
+      try{ CollectJS.startPaymentRequest(); }
+      catch(err){ payFail("Could not start secure payment. Please refresh and try again."); }
+    }else{
+      // DEMO: simulate processing -> confirmation (no real charge)
+      setTimeout(()=> confirmOrder({}), 1400);
     }
+  }
+
+  // Repaint only the summary numbers (used by promo apply) so the live NMI card
+  // fields are never torn down and rebuilt.
+  function paintSummary(){
+    const t=totals();
+    const rows=document.querySelector(".sum-rows");
+    if(rows) rows.innerHTML = `
+          <div class="sum-row"><span>Subtotal</span><span>${fmt(t.sub)}</span></div>
+          ${t.disc>0?`<div class="sum-row disc"><span>Discount (${promoCode})</span><span>−${fmt(t.disc)}</span></div>`:""}
+          <div class="sum-row"><span>Shipping</span><span>${t.ship===0?"FREE":fmt(t.ship)}</span></div>
+          <div class="sum-row total"><span>Total</span><span>${fmt(t.total)}</span></div>`;
+    const btn=document.getElementById("payBtn");
+    if(btn && !btn.disabled){ btn.innerHTML = `${ICON.lock} Pay ${fmt(t.total)}`; payBtnLabel=btn.innerHTML; }
   }
 
   window.toggleBilling = function(cb){ document.getElementById("billingFields").hidden = cb.checked; };
@@ -219,7 +308,7 @@ mountChrome("");
     if(!code){ return; }
     if(PROMOS[code]){ discount = PROMOS[code]; promoCode = code; toast("Promo applied — "+(discount*100)+"% off"); }
     else { discount = 0; promoCode=""; toast("That code isn't valid."); }
-    render();
+    paintSummary();
   };
 
   function confirmOrder(pay){

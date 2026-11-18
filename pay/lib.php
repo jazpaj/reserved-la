@@ -1,14 +1,17 @@
 <?php
 /**
- * Reserved LA — Square payments helper.
- * Server-side total calculation (anti-tamper) + Square Payments API call (HTTPS).
+ * Reserved LA — NMI payments helper.
+ * Server-side total calculation (anti-tamper) + NMI Payment API call (HTTPS).
  */
 
-function rl_square_base() {
-    $cfg = rl_square_config();
-    return ($cfg['SQUARE_ENV'] === 'production')
-        ? 'https://connect.squareup.com'
-        : 'https://connect.squareupsandbox.com';
+/** Full gateway base URL, e.g. https://secure.nmi.com */
+function rl_nmi_base() {
+    $cfg  = rl_nmi_config();
+    $host = trim((string)($cfg['NMI_GATEWAY'] ?? 'secure.nmi.com'));
+    $host = preg_replace('#^https?://#', '', $host);      // tolerate a full URL in config
+    $host = rtrim($host, '/');
+    if ($host === '') $host = 'secure.nmi.com';
+    return 'https://' . $host;
 }
 
 /** Load the {id: price} map generated from the catalog. */
@@ -30,7 +33,7 @@ function rl_prices() {
  * @return array {ok, subtotal, discount, shipping, total, error}
  */
 function rl_compute_total(array $items, $promo = '') {
-    $cfg = rl_square_config();
+    $cfg = rl_nmi_config();
     $prices = rl_prices();
     if (!$prices) return ['ok' => false, 'error' => 'Price list unavailable on server.'];
 
@@ -58,56 +61,73 @@ function rl_compute_total(array $items, $promo = '') {
 }
 
 /**
- * Create a Square payment from a tokenized card (source_id).
- * @return array {ok, status, payment_id, receipt_url, error}
+ * Charge a tokenized card (Collect.js payment token) via the NMI Payment API.
+ *
+ * NMI's transact.php takes url-encoded fields and returns a url-encoded query
+ * string: response=1 (approved) | 2 (declined) | 3 (error), plus transactionid,
+ * authcode, responsetext, response_code, etc.
+ *
+ * @param string $token   Collect.js payment_token
+ * @param float  $amount  order total in DOLLARS (NMI amount is dollars.cents)
+ * @param array  $info    optional {orderid, email, first_name, last_name, address1, city, state, zip}
+ * @return array {ok, status, transaction_id, auth_code, card_last4, error}
  */
-function rl_square_create_payment($sourceId, $amountCents, $idempotencyKey) {
-    $cfg = rl_square_config();
-    $token = $cfg['SQUARE_ACCESS_TOKEN'] ?? '';
-    if ($token === '' || strpos($token, 'YOUR_') === 0) {
-        return ['ok' => false, 'status' => 500, 'payment_id' => null, 'error' => 'Square access token not set in config.php'];
+function rl_nmi_sale($token, $amount, array $info = []) {
+    $cfg = rl_nmi_config();
+    $key = trim((string)($cfg['NMI_SECURITY_KEY'] ?? ''));
+    if ($key === '' || strpos($key, 'YOUR_') === 0) {
+        return ['ok' => false, 'status' => 500, 'transaction_id' => null,
+                'error' => 'NMI security key not set in config.php', 'key_error' => true];
     }
-    $payload = json_encode([
-        'source_id'       => $sourceId,
-        'idempotency_key' => $idempotencyKey,
-        'location_id'     => $cfg['SQUARE_LOCATION_ID'],
-        'amount_money'    => ['amount' => (int)$amountCents, 'currency' => $cfg['CURRENCY'] ?? 'USD'],
-    ]);
-    $url = rl_square_base() . '/v2/payments';
-    $headers = [
-        'Square-Version: ' . ($cfg['SQUARE_VERSION'] ?? '2024-10-17'),
-        'Authorization: Bearer ' . $token,
-        'Content-Type: application/json',
+
+    $fields = [
+        'security_key' => $key,
+        'type'         => 'sale',
+        'payment_token'=> (string)$token,
+        'amount'       => number_format((float)$amount, 2, '.', ''),
+        'currency'     => $cfg['CURRENCY'] ?? 'USD',
     ];
+    // Optional order/customer context (helps reporting + fraud tools).
+    foreach (['orderid','email','first_name','last_name','address1','city','state','zip'] as $k) {
+        if (!empty($info[$k])) $fields[$k] = substr((string)$info[$k], 0, 120);
+    }
+    $body = http_build_query($fields);
+    $url  = rl_nmi_base() . '/api/transact.php';
+    $headers = ['Content-Type: application/x-www-form-urlencoded'];
 
     if (function_exists('curl_init')) {
         $ch = curl_init($url);
         curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => $body,
             CURLOPT_HTTPHEADER => $headers, CURLOPT_TIMEOUT => 25,
         ]);
-        $body = curl_exec($ch); $status = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch);
-        if ($body === false) return ['ok' => false, 'status' => 0, 'payment_id' => null, 'error' => 'cURL: ' . $err];
+        $resp = curl_exec($ch); $status = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch);
+        if ($resp === false) return ['ok' => false, 'status' => 0, 'transaction_id' => null, 'error' => 'cURL: ' . $err];
     } else {
         $ctx = stream_context_create(['http' => [
-            'method' => 'POST', 'header' => implode("\r\n", $headers), 'content' => $payload,
+            'method' => 'POST', 'header' => implode("\r\n", $headers), 'content' => $body,
             'timeout' => 25, 'ignore_errors' => true,
         ]]);
-        $body = @file_get_contents($url, false, $ctx);
+        $resp = @file_get_contents($url, false, $ctx);
         $status = 0;
         $h = function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : ($GLOBALS['http_response_header'] ?? []);
         if (!empty($h[0]) && preg_match('/\s(\d{3})\s/', $h[0], $m)) $status = (int)$m[1];
-        if ($body === false) return ['ok' => false, 'status' => 0, 'payment_id' => null, 'error' => 'HTTP request failed (no cURL)'];
+        if ($resp === false) return ['ok' => false, 'status' => 0, 'transaction_id' => null, 'error' => 'HTTP request failed (no cURL)'];
     }
 
-    $d = json_decode($body, true);
-    if ($status >= 200 && $status < 300 && !empty($d['payment'])) {
-        $pay = $d['payment'];
-        return ['ok' => true, 'status' => $status, 'payment_id' => $pay['id'] ?? null,
-                'receipt_url' => $pay['receipt_url'] ?? null,
-                'card_last4' => $pay['card_details']['card']['last_4'] ?? null, 'error' => null];
+    // NMI replies as a url-encoded query string.
+    parse_str((string)$resp, $r);
+    $code = isset($r['response']) ? (int)$r['response'] : 0;   // 1 approved, 2 declined, 3 error
+    if ($code === 1) {
+        return [
+            'ok'             => true,
+            'status'         => $status ?: 200,
+            'transaction_id' => $r['transactionid'] ?? null,
+            'auth_code'      => $r['authcode'] ?? null,
+            'card_last4'     => (!empty($r['cc_number']) && preg_match('/(\d{4})\D*$/', $r['cc_number'], $mm)) ? $mm[1] : null,
+            'error'          => null,
+        ];
     }
-    $msg = 'Payment declined.';
-    if (!empty($d['errors'][0])) $msg = $d['errors'][0]['detail'] ?? ($d['errors'][0]['code'] ?? $msg);
-    return ['ok' => false, 'status' => $status, 'payment_id' => null, 'error' => $msg];
+    $msg = $r['responsetext'] ?? 'Your payment was declined. Please try another card.';
+    return ['ok' => false, 'status' => $status ?: 402, 'transaction_id' => null, 'error' => $msg];
 }
