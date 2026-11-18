@@ -102,6 +102,22 @@ function rl_send_graph(array $opts) {
     if (!empty($cfg['REPLY_TO'])) {
         $message['replyTo'] = [['emailAddress' => ['address' => $cfg['REPLY_TO']]]];
     }
+    // Store copy: BCC an address (e.g. the shop inbox) on real sends, so the team
+    // sees each order come in. The customer never sees this address. Skipped when
+    // BCC_STORE is empty, or when it would just duplicate a recipient already on To.
+    if (empty($opts['no_bcc']) && !empty($cfg['BCC_STORE'])) {
+        $bccList = is_array($cfg['BCC_STORE']) ? $cfg['BCC_STORE'] : [$cfg['BCC_STORE']];
+        $toLower = array_map('strtolower', $to);
+        $bcc = [];
+        foreach ($bccList as $addr) {
+            $addr = trim((string)$addr);
+            if ($addr !== '' && filter_var($addr, FILTER_VALIDATE_EMAIL)
+                && !in_array(strtolower($addr), $toLower, true)) {
+                $bcc[] = ['emailAddress' => ['address' => $addr]];
+            }
+        }
+        if ($bcc) $message['bccRecipients'] = $bcc;
+    }
     $payload = json_encode(['message' => $message, 'saveToSentItems' => true]);
 
     $url = 'https://graph.microsoft.com/v1.0/users/' . rawurlencode($cfg['SENDER']) . '/sendMail';

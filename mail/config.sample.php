@@ -19,6 +19,11 @@ function rl_config() {
         'SENDER'   => 'support@reservedla.com',
         'REPLY_TO' => 'support@reservedla.com',          // customer replies land in this inbox
 
+        // Store copy: BCC'd on every real order confirmation so the team sees new
+        // orders. The customer never sees this address. One address (string) or
+        // several (array). Set '' to turn the store copy off.
+        'BCC_STORE' => 'support@reservedla.com',
+
         // --- Site / security -----------------------------------------------
         'SITE_URL'       => 'https://reservedla.com',
         'SEND_TOKEN'     => 'change-this-to-a-long-random-string',
