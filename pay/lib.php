@@ -86,6 +86,10 @@ function rl_nmi_sale($token, $amount, array $info = []) {
         'payment_token'=> (string)$token,
         'amount'       => number_format((float)$amount, 2, '.', ''),
         'currency'     => $cfg['CURRENCY'] ?? 'USD',
+        // Do NOT let NMI email its own receipt to the customer. We send our own
+        // branded Order Confirmation (via mail/). 'false' suppresses the NMI
+        // customer receipt even if the account default has receipts on.
+        'customer_receipt' => 'false',
     ];
     // Optional order/customer context (helps reporting + fraud tools).
     foreach (['orderid','email','first_name','last_name','address1','city','state','zip'] as $k) {
